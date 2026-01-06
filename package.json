@@ -1,0 +1,38 @@
+{
+  "name": "bingo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "test:projects": "vitest run",
+    "test:projects:watch": "vitest --watch",
+    "view-report": "turbo run view-report",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/vitest-config": "workspace:*",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.7.4",
+    "turbo": "^2.7.2",
+    "typescript": "5.9.3",
+    "vitest": "^4.0.16"
+  },
+  "packageManager": "pnpm@10.27.0+sha512.72d699da16b1179c14ba9e64dc71c9a40988cbdc65c264cb0e489db7de917f20dcf4d64d8723625f2969ba52d4b7e2a1170682d9ac2a5dcaeaab732b7e16f04a",
+  "engines": {
+    "node": ">=22"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "**/*.{ts,tsx,js,jsx}": [
+      "pnpm dlx eslint --fix",
+      "pnpm dlx prettier --write"
+    ]
+  }
+}
