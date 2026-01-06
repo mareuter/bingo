@@ -37,3 +37,15 @@ test('These should be invalid balls', () => {
   assert(new BingoBall(0), 'Invalid BingoBall!')
   assert(new BingoBall(76), 'Invalid BingoBall!')
 })
+
+test('These balls should be equal', () => {
+  const bb1 = new BingoBall(-1)
+  const bb2 = new BingoBall(-1)
+  expect(bb1.equals(bb2)).toBeTruthy()
+})
+
+test('These types and balls should not be equal', () => {
+  const bb1 = new BingoBall(-1)
+  const bb2 = new BingoBall(34)
+  expect(bb1.equals(bb2)).toBeFalsy()
+})

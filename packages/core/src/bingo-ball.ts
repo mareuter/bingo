@@ -27,6 +27,10 @@ class BingoBall {
   public toString(): string {
     return `${this.#letter}${this.number}`
   }
+
+  public equals(bb: BingoBall): boolean {
+    return bb.number === this.number
+  }
 }
 
 export default BingoBall
