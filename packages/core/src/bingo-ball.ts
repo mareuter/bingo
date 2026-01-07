@@ -3,8 +3,8 @@ class BingoBall {
   public static GAME_OVER: number = -2
   public static MIN: number = 1
   public static MAX: number = 75
+  public static RANGE: number = 15
   #columns: string[] = ['B', 'I', 'N', 'G', 'O'] as const
-  #range: number = 15
   #letter: string
   number: number
 
@@ -13,7 +13,7 @@ class BingoBall {
     if (n === -1 || n === -2) {
       this.#letter = ' '
     } else if (n >= BingoBall.MIN || n <= BingoBall.MAX) {
-      const index = Math.floor((n - 1) / this.#range)
+      const index = Math.floor((n - 1) / BingoBall.RANGE)
       this.#letter = this.#columns[index]!
     } else {
       throw new Error('Invalid BingoBall!')

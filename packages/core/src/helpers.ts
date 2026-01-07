@@ -1,0 +1,11 @@
+export function shuffle(array: number[]): number[] {
+  // Fisher-Yates shuffle algorithm
+  const newArray = [...array]
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j: number = Math.floor(Math.random() * (i + 1))
+    const temp = newArray[i]
+    newArray[i] = newArray[j]!
+    newArray[j] = temp!
+  }
+  return newArray
+}
