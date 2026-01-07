@@ -1,4 +1,4 @@
-export function shuffle(array: number[]): number[] {
+export function shuffle<T>(array: Array<T>): Array<T> {
   // Fisher-Yates shuffle algorithm
   const newArray = [...array]
   for (let i = newArray.length - 1; i > 0; i--) {

@@ -4,7 +4,7 @@ import BingoBall from '../src/bingo-ball'
 import BingoCard from '../src/bingo-card'
 import * as helpers from '../src/helpers'
 
-vi.spyOn(helpers, 'shuffle').mockImplementation((r: number[]) => {
+vi.spyOn(helpers, 'shuffle').mockImplementation((r) => {
   if (r[0] === 1) {
     return [7, 3, 10, 1, 11, 5, 2, 15, 6, 4, 13, 9, 8, 12, 14]
   } else if (r[0] === 16) {

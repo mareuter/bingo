@@ -14,7 +14,7 @@ class BingoCard {
       for (let j = min; j <= max; j++) {
         columnValues.push(j)
       }
-      const shuffled = shuffle(columnValues)
+      const shuffled = shuffle<number>(columnValues)
       for (let k = 0; k < BingoCard.SIZE; k++) {
         this.boardValues[i]!.push(new BingoBall(shuffled[k]!))
       }
