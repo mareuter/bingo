@@ -1,5 +1,6 @@
 import { AUTO, Types } from 'phaser'
 
+import Game from './scenes/Game'
 import { MainMenu } from './scenes/MainMenu'
 
 const config: Types.Core.GameConfig = {
@@ -9,7 +10,7 @@ const config: Types.Core.GameConfig = {
   backgroundColor: '#0000ff',
   parent: 'game-container',
   pixelArt: true,
-  scene: [MainMenu],
+  scene: [Game],
 }
 
 const StartGame = (parent: string) => {

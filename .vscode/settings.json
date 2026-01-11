@@ -5,4 +5,9 @@
     }
   ],
   "typescript.tsdk": "node_modules/typescript/lib",
+  "prettier.configPath": ".prettierrc.json",
+  "notebook.defaultFormatter": null,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "prettier.requireConfig": true,
+  "typescript.enablePromptUseWorkspaceTsdk": true,
 }
