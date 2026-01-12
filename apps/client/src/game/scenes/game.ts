@@ -1,7 +1,7 @@
 import { Scene, Time } from 'phaser'
 
-import BallStatusPanel from '../game_objects/BallStatusPanel'
-import CurrentBallPanel from '../game_objects/CurrentBallPanel'
+import BallStatusPanel from '../game-objects/ball-status-panel'
+import CurrentBallPanel from '../game-objects/current-ball-panel'
 import RandomBag from '@repo/core/src/random-bag'
 import { NoMoreBingoBallsError } from '@repo/core/src/bingo-errors'
 

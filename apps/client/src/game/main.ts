@@ -1,7 +1,7 @@
 import { AUTO, Types } from 'phaser'
 
-import Game from './scenes/Game'
-import { MainMenu } from './scenes/MainMenu'
+import Game from './scenes/game'
+import { MainMenu } from './scenes/main-menu'
 
 const config: Types.Core.GameConfig = {
   type: AUTO,
