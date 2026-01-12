@@ -1,5 +1,6 @@
 import BingoBall from "@repo/core/src/bingo-ball";
 import { GameObjects, Scene } from "phaser";
+import { BALL_COLOR, BALL_PANEL_BACKGROUND, hexNumToString } from "../common";
 
 class CurrentBallPanel {
     scene: Scene
@@ -17,13 +18,13 @@ class CurrentBallPanel {
         this.x = x - offsetX - side
         this.y = y
 
-        this.border = this.scene.add.rectangle(this.x, this.y, height, height, 0x858585)
+        this.border = this.scene.add.rectangle(this.x, this.y, height, height, BALL_PANEL_BACKGROUND)
         this.border.setStrokeStyle(4, 0x0)
 
         this.ballText = this.scene.add.text(this.x, this.y, "B1", {
             fontFamily: 'Arial Black',
             fontSize: this.#fontSize,
-            color: '#edd45bff',
+            color: hexNumToString(BALL_COLOR),
             stroke: '#000000',
             strokeThickness: 2,
             align: 'center',
@@ -37,7 +38,7 @@ class CurrentBallPanel {
 
         const radius = 96 * Math.SQRT2 / 2
         this.ballOutline = this.scene.add.circle(this.x, this.y, radius)
-        this.ballOutline.setStrokeStyle(4, 0xedd45bff)
+        this.ballOutline.setStrokeStyle(4, BALL_COLOR)
 
         this.ballOutline.setVisible(false)
         this.ballText.setVisible(false)
@@ -51,6 +52,11 @@ class CurrentBallPanel {
             this.ballText.setVisible(true)
         }
         this.ballText.text = bb.toString()
+    }
+
+    clear() {
+        this.ballOutline.setVisible(false)
+        this.ballText.setVisible(false)
     }
 }
 

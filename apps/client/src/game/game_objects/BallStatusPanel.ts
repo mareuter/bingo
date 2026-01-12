@@ -2,6 +2,7 @@ import { GameObjects, Scene } from 'phaser'
 
 import BingoBall from '@repo/core/src/bingo-ball'
 import { COLUMNS } from '@repo/core/src/constants'
+import { BALL_COLOR, BALL_PANEL_BACKGROUND, hexNumToString } from '../common'
 
 class BallStatusPanel {
   scene: Scene
@@ -27,7 +28,7 @@ class BallStatusPanel {
     this.fullWidth = this.width + 1.5 * deltaX + 16
     console.log(this.width, deltaX, this.fullWidth)
     this.height = COLUMNS.length * deltaY
-    this.border = this.scene.add.rectangle(x, y, this.width, this.height, 0x858585)
+    this.border = this.scene.add.rectangle(x, y, this.width, this.height, BALL_PANEL_BACKGROUND)
     this.border.setStrokeStyle(4, 0x0)
 
     this.display = []
@@ -58,7 +59,7 @@ class BallStatusPanel {
           .text(xp1, yp, value.toString(), {
             fontFamily: 'Arial Black',
             fontSize: fontSize,
-            color: '#edd45bff',
+            color: hexNumToString(BALL_COLOR),
             stroke: '#000000',
             strokeThickness: 2,
             align: 'center',
