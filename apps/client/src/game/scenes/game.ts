@@ -26,13 +26,19 @@ class Game extends Scene {
     const statusX = 602
     const statusY = 200
     this.ballStatusPanel = new BallStatusPanel(this, statusX, statusY)
-    this.currentBallPanel = new CurrentBallPanel(this, statusX, statusY, this.ballStatusPanel.fullWidth / 2, this.ballStatusPanel.height)
+    this.currentBallPanel = new CurrentBallPanel(
+      this,
+      statusX,
+      statusY,
+      this.ballStatusPanel.fullWidth / 2,
+      this.ballStatusPanel.height,
+    )
 
     this.cardPanel = new CardPanel(this, 512, 450, new BingoCard())
 
     this.timeline = this.add.timeline({
       from: 5000,
-      run: () => this.announceBall()
+      run: () => this.announceBall(),
     })
 
     this.timeline.repeat().play()

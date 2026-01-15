@@ -83,10 +83,10 @@ class BallStatusPanel {
   }
 
   resetDisplay() {
-    this.display.forEach(subArray => {
-        subArray.forEach(element => {
-            element.setVisible(true)
-        })
+    this.display.forEach((subArray) => {
+      subArray.forEach((element) => {
+        element.setVisible(true)
+      })
     })
   }
 }
