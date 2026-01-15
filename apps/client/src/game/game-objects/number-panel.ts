@@ -13,7 +13,7 @@ class NumberPanel extends GameObjects.Rectangle {
         this.scene.add.existing(this)
         this.setStrokeStyle(2, NUMBER_PANEL_COLOR)
         this.setFillStyle(0xffffe6)
-        let fSize
+        let fSize: number
         if (value === "FREE") {
             fSize = 18
         } else {

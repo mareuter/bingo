@@ -4,9 +4,11 @@ import NumberButton from "./number-button";
 import NumberPanel from "./number-panel";
 import { COLUMNS } from "@repo/core/src/constants";
 import BingoBall from "@repo/core/src/bingo-ball";
+import IWonButton from "./iwon-button";
 
 class CardPanel extends GameObjects.Container {
     bingoCard: BingoCard
+    iWonButton: IWonButton
 
     constructor(scene: Scene, x: number, y: number, card: BingoCard) {
         super(scene, x, y)
@@ -34,6 +36,9 @@ class CardPanel extends GameObjects.Container {
                 new NumberButton(scene, xp, yp, value)
             }
         }
+        const yp = 6 * NumberPanel.side + y
+        const width = COLUMNS.length * NumberPanel.side
+        this.iWonButton = new IWonButton(scene, x, yp, width, NumberPanel.side)
     }
 }
 
