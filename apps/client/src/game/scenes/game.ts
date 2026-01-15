@@ -4,11 +4,14 @@ import BallStatusPanel from '../game-objects/ball-status-panel'
 import CurrentBallPanel from '../game-objects/current-ball-panel'
 import RandomBag from '@repo/core/src/random-bag'
 import { NoMoreBingoBallsError } from '@repo/core/src/bingo-errors'
+import CardPanel from '../game-objects/card-panel'
+import BingoCard from '@repo/core/src/bingo-card'
 
 class Game extends Scene {
   ballStatusPanel: BallStatusPanel
   currentBallPanel: CurrentBallPanel
   bagOfBalls: RandomBag
+  cardPanel: CardPanel
   timeline: Time.Timeline
 
   constructor() {
@@ -24,6 +27,8 @@ class Game extends Scene {
     const statusY = 200
     this.ballStatusPanel = new BallStatusPanel(this, statusX, statusY)
     this.currentBallPanel = new CurrentBallPanel(this, statusX, statusY, this.ballStatusPanel.fullWidth / 2, this.ballStatusPanel.height)
+
+    this.cardPanel = new CardPanel(this, 512, 450, new BingoCard())
 
     this.timeline = this.add.timeline({
       from: 5000,
