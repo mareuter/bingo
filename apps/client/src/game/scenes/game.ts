@@ -36,6 +36,8 @@ class Game extends Scene {
 
     this.cardPanel = new CardPanel(this, 512, 450, new BingoCard())
 
+    this.events.on('haveWinningCard', this.handleWinningCard, this)
+
     this.timeline = this.add.timeline({
       from: 5000,
       run: () => this.announceBall(),
@@ -55,6 +57,10 @@ class Game extends Scene {
         this.currentBallPanel.clear()
       }
     }
+  }
+
+  handleWinningCard(card: BingoCard) {
+    console.log(card)
   }
 }
 

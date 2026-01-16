@@ -35,6 +35,7 @@ class IWonButton extends GameObjects.Rectangle {
   handleClick() {
     this.setAlpha(0.4)
     console.log('I Won!')
+    this.scene.events.emit('bingoIWon!')
   }
 
   fixUp() {

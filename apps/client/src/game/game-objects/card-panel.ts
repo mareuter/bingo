@@ -20,15 +20,15 @@ class CardPanel {
     this.bingoCard = card
 
     for (let i = 0; i < COLUMNS.length; i++) {
-      const xp = (i - 2) * NumberPanel.side + x
-      new NumberPanel(scene, xp, y, COLUMNS[i]!)
+      const xp = (i - 2) * NumberPanel.side + this.x
+      new NumberPanel(scene, xp, this.y, COLUMNS[i]!)
     }
 
     // this.scene.add.existing(this)
     for (let j = 0; j < BingoCard.SIZE; j++) {
       for (let k = 0; k < BingoCard.SIZE; k++) {
-        const xp = (j - 2) * NumberPanel.side + x
-        const yp = (k + 1) * NumberPanel.side + y
+        const xp = (j - 2) * NumberPanel.side + this.x
+        const yp = (k + 1) * NumberPanel.side + this.y
         const bv = this.bingoCard.boardValues[j]![k]!.number
         let value
         if (bv === BingoBall.FREE_SPACE) {
@@ -36,12 +36,18 @@ class CardPanel {
         } else {
           value = bv.toString()
         }
-        new NumberButton(scene, xp, yp, value)
+        new NumberButton(this.scene, xp, yp, value)
       }
     }
-    const yp = 6 * NumberPanel.side + y
+    const yp = 6 * NumberPanel.side + this.y
     const width = COLUMNS.length * NumberPanel.side
-    this.iWonButton = new IWonButton(scene, x, yp, width, NumberPanel.side)
+    this.iWonButton = new IWonButton(this.scene, this.x, yp, width, NumberPanel.side)
+    this.scene.events.on('bingoIWon!', this.handleWinningCard, this)
+  }
+
+  handleWinningCard() {
+    console.log('Winning card being sent')
+    this.scene.events.emit('haveWinningCard', this.bingoCard)
   }
 }
 
