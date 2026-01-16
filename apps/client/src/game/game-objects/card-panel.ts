@@ -1,4 +1,4 @@
-import { GameObjects, Scene } from 'phaser'
+import { Scene } from 'phaser'
 import BingoCard from '@repo/core/src/bingo-card'
 import NumberButton from './number-button'
 import NumberPanel from './number-panel'
@@ -6,19 +6,22 @@ import { COLUMNS } from '@repo/core/src/constants'
 import BingoBall from '@repo/core/src/bingo-ball'
 import IWonButton from './iwon-button'
 
-class CardPanel extends GameObjects.Container {
+class CardPanel {
+  scene: Scene
+  x: number
+  y: number
   bingoCard: BingoCard
   iWonButton: IWonButton
 
   constructor(scene: Scene, x: number, y: number, card: BingoCard) {
-    super(scene, x, y)
-    // this.scene.add.existing(this)
+    this.scene = scene
+    this.x = x
+    this.y = y
     this.bingoCard = card
 
     for (let i = 0; i < COLUMNS.length; i++) {
       const xp = (i - 2) * NumberPanel.side + x
       new NumberPanel(scene, xp, y, COLUMNS[i]!)
-      // this.add(np)
     }
 
     // this.scene.add.existing(this)
