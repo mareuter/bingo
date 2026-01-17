@@ -5,9 +5,11 @@ import BingoBall from '../src/bingo-ball'
 import BingoCard from '../src/bingo-card'
 import RandomBag from '../src/random-bag'
 
-import RowBag from './test-bags/row-bag'
 import type BagOfBalls from '../src/bag-of-balls'
+import RowBag from './test-bags/row-bag'
 import ColumnBag from './test-bags/column-bag'
+import DiagonalBag from './test-bags/diagonal-bag'
+import OtherDiagonalBag from './test-bags/other-diagonal-bag'
 
 const runGame = (bagOfBalls: BagOfBalls): GameLeader => {
   const gl = new GameLeader(bagOfBalls)
@@ -72,6 +74,18 @@ describe('Card winner verification tests', () => {
   test('Verify column bingo', () => {
     const gl = runGame(new ColumnBag())
     expect(gl.numAnnouncedBalls()).toBe(12)
+    expect(gl.verify(card)).toBeTruthy()
+  })
+
+  test('Verify diagonal (ul -> lr) bingo', () => {
+    const gl = runGame(new DiagonalBag())
+    expect(gl.numAnnouncedBalls()).toBe(14)
+    expect(gl.verify(card)).toBeTruthy()
+  })
+
+  test('Verify other diagonal (ll -> ur) bingo', () => {
+    const gl = runGame(new OtherDiagonalBag())
+    expect(gl.numAnnouncedBalls()).toBe(14)
     expect(gl.verify(card)).toBeTruthy()
   })
 })

@@ -38,6 +38,8 @@ class GameLeader {
   verify(card: BingoCard): boolean {
     let rowMatches = 0
     let columnMatches = 0
+    let diagMatches = 0
+    let otherDiagMatches = 0
 
     for (let i = 0; i < BingoCard.SIZE; i++) {
       for (let j = 0; j < BingoCard.SIZE; j++) {
@@ -46,6 +48,12 @@ class GameLeader {
         }
         if (this._findBall(card.boardValues[j]![i]!)) {
           columnMatches++
+        }
+        if (i === j && this._findBall(card.boardValues[i]![j]!)) {
+          diagMatches++
+        }
+        if (i + j === BingoCard.SIZE - 1 && this._findBall(card.boardValues[j]![i]!)) {
+          otherDiagMatches++
         }
       }
       if (rowMatches === BingoCard.SIZE) {
@@ -56,6 +64,11 @@ class GameLeader {
         rowMatches = 0
         columnMatches = 0
       }
+    }
+    if (diagMatches === BingoCard.SIZE) {
+      return true
+    } else if (otherDiagMatches === BingoCard.SIZE) {
+      return true
     }
     return false
   }
