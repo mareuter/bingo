@@ -8,14 +8,15 @@ class RandomBag extends BagOfBalls {
 
   constructor() {
     super()
-    const temp: BingoBall[] = []
     for (let i = BingoBall.MIN; i <= BingoBall.MAX; i++) {
-      temp.push(new BingoBall(i))
+      this.#balls.push(new BingoBall(i))
     }
-    this.#balls = shuffle<BingoBall>(temp)
   }
 
   public getNext(): BingoBall {
+    if (this.#balls.length > 1) {
+      this.#balls = shuffle<BingoBall>(this.#balls)
+    }
     if (this.#balls.length > 0) {
       return this.#balls.pop()!
     } else {

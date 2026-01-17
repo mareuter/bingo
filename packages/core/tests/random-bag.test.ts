@@ -1,37 +1,22 @@
-import { expect, test, vi } from 'vitest'
+import { beforeEach, expect, test, vi } from 'vitest'
 
-import BingoBall from '../src/bingo-ball'
 import { NoMoreBingoBallsError } from '../src/bingo-errors'
 import * as helpers from '../src/helpers'
 import RandomBag from '../src/random-bag'
 
-vi.spyOn(helpers, 'shuffle').mockImplementation((_r) => {
-  return [
-    new BingoBall(2),
-    new BingoBall(24),
-    new BingoBall(25),
-    new BingoBall(64),
-    new BingoBall(36),
-    new BingoBall(7),
-    new BingoBall(9),
-    new BingoBall(14),
-    new BingoBall(31),
-    new BingoBall(37),
-    new BingoBall(53),
-    new BingoBall(58),
-    new BingoBall(30),
-  ]
+const shuffleSpy = vi.spyOn(helpers, 'shuffle')
+
+beforeEach(() => {
+  shuffleSpy.mockReset()
 })
 
 test('First five balls from RandomBag', () => {
+  const quickRun = 5
   const rb = new RandomBag()
-  const balls: BingoBall[] = []
-  for (let i = 0; i < 5; i++) {
-    balls.push(rb.getNext())
+  for (let i = 0; i < quickRun; i++) {
+    rb.getNext()
   }
-  expect(balls).toEqual(
-    [new BingoBall(31), new BingoBall(37), new BingoBall(53), new BingoBall(58), new BingoBall(30)].reverse(),
-  )
+  expect(shuffleSpy.mock.calls.length).toBe(quickRun)
 })
 
 test('Exhaust bag and test error on empty bag', () => {
@@ -43,4 +28,5 @@ test('Exhaust bag and test error on empty bag', () => {
     } while (check)
   }
   expect(() => runToEmpty()).toThrow(NoMoreBingoBallsError)
+  expect(shuffleSpy.mock.calls.length).toBe(74)
 })
