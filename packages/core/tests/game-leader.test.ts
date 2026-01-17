@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test, vi } from 'vitest'
+import { beforeEach, describe, expect, test } from 'vitest'
 
 import GameLeader from '../src/game-leader'
 import BingoBall from '../src/bingo-ball'
@@ -6,6 +6,17 @@ import BingoCard from '../src/bingo-card'
 import RandomBag from '../src/random-bag'
 
 import RowBag from './test-bags/row-bag'
+import type BagOfBalls from '../src/bag-of-balls'
+import ColumnBag from './test-bags/column-bag'
+
+const runGame = (bagOfBalls: BagOfBalls): GameLeader => {
+  const gl = new GameLeader(bagOfBalls)
+  let ball: BingoBall
+  do {
+    ball = gl.announceBall()
+  } while (!ball.equals(new BingoBall(BingoBall.GAME_OVER)))
+  return gl
+}
 
 test('Reset announced balls array', () => {
   const gl = new GameLeader(new RandomBag())
@@ -53,11 +64,13 @@ describe('Card winner verification tests', () => {
   })
 
   test('Verify row bingo', () => {
-    const gl = new GameLeader(new RowBag())
-    let ball: BingoBall
-    do {
-      ball = gl.announceBall()
-    } while (!ball.equals(new BingoBall(BingoBall.GAME_OVER)))
+    const gl = runGame(new RowBag())
+    expect(gl.numAnnouncedBalls()).toBe(12)
+    expect(gl.verify(card)).toBeTruthy()
+  })
+
+  test('Verify column bingo', () => {
+    const gl = runGame(new ColumnBag())
     expect(gl.numAnnouncedBalls()).toBe(12)
     expect(gl.verify(card)).toBeTruthy()
   })

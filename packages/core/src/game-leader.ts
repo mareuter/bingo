@@ -37,17 +37,24 @@ class GameLeader {
 
   verify(card: BingoCard): boolean {
     let rowMatches = 0
+    let columnMatches = 0
 
     for (let i = 0; i < BingoCard.SIZE; i++) {
       for (let j = 0; j < BingoCard.SIZE; j++) {
         if (this._findBall(card.boardValues[i]![j]!)) {
           rowMatches++
         }
+        if (this._findBall(card.boardValues[j]![i]!)) {
+          columnMatches++
+        }
       }
       if (rowMatches === BingoCard.SIZE) {
         return true
+      } else if (columnMatches === BingoCard.SIZE) {
+        return true
       } else {
         rowMatches = 0
+        columnMatches = 0
       }
     }
     return false
