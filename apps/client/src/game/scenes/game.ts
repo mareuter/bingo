@@ -10,6 +10,7 @@ import BingoCard from '@repo/core/src/bingo-card'
 import { BALL_PANEL_BACKGROUND, hexNumToString } from '../common'
 import StartGameButton from '../game-objects/start-new-game-button'
 import BingoBall from '@repo/core/src/bingo-ball'
+import MessagePanel from '../game-objects/message-panel'
 
 const sleep = (delay: number) => new Promise((resolve) => setTimeout(resolve, delay))
 
@@ -19,7 +20,7 @@ class Game extends Scene {
   gameLeader: GameLeader
   cardPanel: CardPanel
   timeline: Time.Timeline
-  messagePanel: GameObjects.DOMElement
+  messagePanel: MessagePanel
   startNewGameButton: StartGameButton
 
   constructor() {
@@ -42,15 +43,8 @@ class Game extends Scene {
       this.ballStatusPanel.height,
     )
 
-    const style = {
-      'background-color': hexNumToString(BALL_PANEL_BACKGROUND),
-      width: '700px',
-      height: '50px',
-      font: '36px Arial',
-      'text-align': 'center',
-      'padding-top': '5px',
-    }
-    this.messagePanel = this.add.dom(512, 70, 'div', style, 'Welcome!')
+    this.messagePanel = new MessagePanel(this, 512, 66)
+
     this.startNewGameButton = new StartGameButton(this, 512, 320)
     this.events.on('startNewGame', this.startNewGame, this)
 
@@ -65,10 +59,8 @@ class Game extends Scene {
 
   async startNewGame() {
     this.currentBallPanel.clear()
-    this.messagePanel.setText('Starting Game!')
+    await this.messagePanel.setAndClear('Starting Game!')
     this.timeline.repeat().play()
-    await sleep(2000)
-    this.messagePanel.setText('')
   }
 
   announceBall() {
@@ -85,16 +77,13 @@ class Game extends Scene {
   async handleWinningCard(card: BingoCard) {
     this.timeline.pause()
     if (this.gameLeader.verify(card)) {
-      this.messagePanel.setText('Player Won!!!')
       this.timeline.stop()
-      this.currentBallPanel.clear()
-      await sleep(2000)
-      this.messagePanel.setText('Game Over!')
+      this.currentBallPanel.updateBall(new BingoBall(BingoBall.GAME_OVER))
+      await this.messagePanel.setAndClear('Player Won!!!')
+      await this.messagePanel.setAndClear('Game Over!')
       this.startNewGameButton.enable()
     } else {
-      this.messagePanel.setText('Player cried Wolf!! ... Be careful!!')
-      await sleep(2000)
-      this.messagePanel.setText('')
+      await this.messagePanel.setAndClear('Player cried Wolf!! ... Be careful!!')
       this.timeline.resume()
     }
   }
