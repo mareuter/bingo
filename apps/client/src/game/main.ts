@@ -10,6 +10,9 @@ const config: Types.Core.GameConfig = {
   backgroundColor: '#0000ff',
   parent: 'game-container',
   pixelArt: true,
+  dom: {
+    createContainer: true,
+  },
   scene: [Game],
 }
 
