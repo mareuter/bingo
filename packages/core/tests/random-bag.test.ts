@@ -6,6 +6,14 @@ import RandomBag from '../src/random-bag'
 
 const shuffleSpy = vi.spyOn(helpers, 'shuffle')
 
+const runToEmpty = (bag: RandomBag) => {
+  const rb = bag
+  const check = true
+  do {
+    rb.getNext()
+  } while (check)
+}
+
 beforeEach(() => {
   shuffleSpy.mockReset()
 })
@@ -20,13 +28,17 @@ test('First five balls from RandomBag', () => {
 })
 
 test('Exhaust bag and test error on empty bag', () => {
-  const runToEmpty = () => {
-    const rb = new RandomBag()
-    const check = true
-    do {
-      rb.getNext()
-    } while (check)
-  }
-  expect(() => runToEmpty()).toThrow(NoMoreBingoBallsError)
+  expect(() => runToEmpty(new RandomBag())).toThrow(NoMoreBingoBallsError)
   expect(shuffleSpy.mock.calls.length).toBe(74)
+})
+
+test('Exhaust and refill bag', () => {
+  const rb = new RandomBag()
+  try {
+    runToEmpty(rb)
+  } catch {
+    //
+  }
+  rb.refillBag()
+  expect(rb.length).toBe(75)
 })

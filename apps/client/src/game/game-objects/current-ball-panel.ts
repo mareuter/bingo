@@ -65,6 +65,10 @@ class CurrentBallPanel {
     this.ballOutline.setVisible(false)
     this.ballText.setVisible(false)
   }
+
+  gameOver() {
+    this.updateBall(new BingoBall(BingoBall.GAME_OVER))
+  }
 }
 
 export default CurrentBallPanel

@@ -12,6 +12,7 @@ import DiagonalBag from './test-bags/diagonal-bag'
 import OtherDiagonalBag from './test-bags/other-diagonal-bag'
 import TwoBingoBag from './test-bags/two-bingo-bag.'
 import NoBingoBag from './test-bags/no-bingo-bag'
+import ShortBag from './test-bags/short-bag'
 
 const runGame = (bagOfBalls: BagOfBalls): GameLeader => {
   const gl = new GameLeader(bagOfBalls)
@@ -22,11 +23,12 @@ const runGame = (bagOfBalls: BagOfBalls): GameLeader => {
   return gl
 }
 
-test('Reset announced balls array', () => {
-  const gl = new GameLeader(new RandomBag())
-  gl.resetAnnouncedBalls()
+test('Reset game', () => {
+  const gl = runGame(new RandomBag())
+  gl.reset()
   const balls = gl.numAnnouncedBalls()
   expect(balls).toBe(0)
+  expect(gl.bagSize).toBe(75)
 })
 
 test('Announce ball', () => {
@@ -102,4 +104,24 @@ describe('Card winner verification tests', () => {
     expect(gl.numAnnouncedBalls()).toBe(14)
     expect(gl.verify(card)).toBeFalsy()
   })
+})
+
+test('Game state checks', () => {
+  const gl = new GameLeader(new ShortBag())
+  expect(gl.isWaiting()).toBeTruthy()
+  expect(gl.isPlaying()).toBeFalsy()
+  expect(gl.isGameOver()).toBeFalsy()
+  gl.announceBall()
+  expect(gl.isWaiting()).toBeFalsy()
+  expect(gl.isPlaying()).toBeTruthy()
+  expect(gl.isGameOver()).toBeFalsy()
+  gl.announceBall()
+  gl.announceBall()
+  expect(gl.isWaiting()).toBeFalsy()
+  expect(gl.isPlaying()).toBeFalsy()
+  expect(gl.isGameOver()).toBeTruthy()
+  gl.reset()
+  expect(gl.isWaiting()).toBeTruthy()
+  expect(gl.isPlaying()).toBeFalsy()
+  expect(gl.isGameOver()).toBeFalsy()
 })

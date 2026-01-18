@@ -8,6 +8,10 @@ class RandomBag extends BagOfBalls {
 
   constructor() {
     super()
+    this._setup()
+  }
+
+  private _setup(): void {
     for (let i = BingoBall.MIN; i <= BingoBall.MAX; i++) {
       this.#balls.push(new BingoBall(i))
     }
@@ -22,6 +26,14 @@ class RandomBag extends BagOfBalls {
     } else {
       throw new NoMoreBingoBallsError('No Bingo balls left!')
     }
+  }
+
+  public get length(): number {
+    return this.#balls.length
+  }
+
+  public refillBag(): void {
+    this._setup()
   }
 }
 

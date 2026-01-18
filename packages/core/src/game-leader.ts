@@ -1,14 +1,17 @@
 import BagOfBalls from './bag-of-balls'
 import BingoBall from './bingo-ball'
 import BingoCard from './bingo-card'
+import { GAMESTATE, GameState } from './game-state'
 
 class GameLeader {
   #announcedBalls: BingoBall[] = []
   #bagOfBalls: BagOfBalls
+  #gameState: GameState
 
   constructor(bagOfBalls: BagOfBalls) {
     this.resetAnnouncedBalls()
     this.#bagOfBalls = bagOfBalls
+    this.#gameState = GAMESTATE.WAITING
   }
 
   private _findBall(ball: BingoBall): boolean {
@@ -17,18 +20,44 @@ class GameLeader {
   }
 
   announceBall(): BingoBall {
+    if (this.isWaiting()) {
+      this.#gameState = GAMESTATE.PLAYING
+    }
     let ball: BingoBall
     try {
       ball = this.#bagOfBalls.getNext()
     } catch {
       ball = new BingoBall(BingoBall.GAME_OVER)
+      this.#gameState = GAMESTATE.GAMEOVER
     }
     this.#announcedBalls.push(ball)
     return ball
   }
 
+  get bagSize(): number {
+    return this.#bagOfBalls.length
+  }
+
+  isGameOver() {
+    return this.#gameState === GAMESTATE.GAMEOVER
+  }
+
+  isPlaying() {
+    return this.#gameState === GAMESTATE.PLAYING
+  }
+
+  isWaiting() {
+    return this.#gameState === GAMESTATE.WAITING
+  }
+
   numAnnouncedBalls() {
     return this.#announcedBalls.length - 1
+  }
+
+  reset() {
+    this.#gameState = GAMESTATE.WAITING
+    this.resetAnnouncedBalls()
+    this.#bagOfBalls.refillBag()
   }
 
   resetAnnouncedBalls() {

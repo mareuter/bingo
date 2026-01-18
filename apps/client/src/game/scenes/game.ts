@@ -19,9 +19,9 @@ class Game extends Scene {
   currentBallPanel: CurrentBallPanel
   gameLeader: GameLeader
   cardPanel: CardPanel
-  timeline: Time.Timeline
   messagePanel: MessagePanel
   startNewGameButton: StartGameButton
+  updateGameEvent: Time.TimerEvent
 
   constructor() {
     super('Game')
@@ -51,40 +51,49 @@ class Game extends Scene {
     this.cardPanel = new CardPanel(this, 512, 450, new BingoCard())
     this.events.on('haveWinningCard', this.handleWinningCard, this)
 
-    this.timeline = this.add.timeline({
-      from: 5000,
-      run: () => this.announceBall(),
+    this.updateGameEvent = this.time.addEvent({
+      delay: 5000,
+      callback: () => this.announceBall(),
+      callbackScope: this,
+      loop: !this.gameLeader.isGameOver(),
     })
+    this.updateGameEvent.paused = true
   }
 
   async startNewGame() {
     this.currentBallPanel.clear()
     await this.messagePanel.setAndClear('Starting Game!')
-    this.timeline.repeat().play()
+    this.updateGameEvent.paused = false
   }
 
-  announceBall() {
+  async announceBall() {
     const bb = this.gameLeader.announceBall()
     this.currentBallPanel.updateBall(bb)
-    if (bb.number !== BingoBall.GAME_OVER) {
+    if (!this.gameLeader.isGameOver()) {
       this.ballStatusPanel.updateDisplay(bb)
     } else {
-      this.timeline.stop()
+      this.updateGameEvent.paused = true
+      this.currentBallPanel.gameOver()
+      await this.messagePanel.setAndClear('Game Over!')
+      await this.messagePanel.setAndClear('Nobody Won!')
+      this.ballStatusPanel.resetDisplay()
+      this.gameLeader.reset()
       this.startNewGameButton.enable()
     }
   }
 
   async handleWinningCard(card: BingoCard) {
-    this.timeline.pause()
+    this.updateGameEvent.paused = true
     if (this.gameLeader.verify(card)) {
-      this.timeline.stop()
-      this.currentBallPanel.updateBall(new BingoBall(BingoBall.GAME_OVER))
+      this.currentBallPanel.gameOver()
       await this.messagePanel.setAndClear('Player Won!!!')
       await this.messagePanel.setAndClear('Game Over!')
+      this.ballStatusPanel.resetDisplay()
+      this.gameLeader.reset()
       this.startNewGameButton.enable()
     } else {
       await this.messagePanel.setAndClear('Player cried Wolf!! ... Be careful!!')
-      this.timeline.resume()
+      this.updateGameEvent.paused = false
     }
   }
 }

@@ -25,7 +25,7 @@ class MessagePanel extends GameObjects.DOMElement {
     this.setText('')
   }
 
-  async setAndClear(text: string, delayInMillis: number = 2000) {
+  async setAndClear(text: string, delayInMillis: number = 3000) {
     this.setText(text)
     await sleep(delayInMillis)
     this.clear()
