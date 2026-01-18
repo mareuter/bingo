@@ -53,7 +53,12 @@ class CurrentBallPanel {
     if (!this.ballText.visible) {
       this.ballText.setVisible(true)
     }
-    this.ballText.text = bb.toString()
+    if (bb.number === BingoBall.GAME_OVER) {
+      this.ballOutline.setVisible(false)
+      this.ballText.text = 'Game\nOver'
+    } else {
+      this.ballText.text = bb.toString()
+    }
   }
 
   clear() {
