@@ -7,7 +7,8 @@ import RandomBag from '@repo/core/src/random-bag'
 import { NoMoreBingoBallsError } from '@repo/core/src/bingo-errors'
 import CardPanel from '../game-objects/card-panel'
 import BingoCard from '@repo/core/src/bingo-card'
-import { BALL_PANEL_BACKGROUND, hexNumToString } from '../common'
+import PlayerRecord from '@repo/core/src/player-record'
+import { BALL_PANEL_BACKGROUND, MAX_WOLF_CRIES, hexNumToString } from '../common'
 import StartGameButton from '../game-objects/start-new-game-button'
 import BingoBall from '@repo/core/src/bingo-ball'
 import MessagePanel from '../game-objects/message-panel'
@@ -18,10 +19,11 @@ class Game extends Scene {
   ballStatusPanel: BallStatusPanel
   currentBallPanel: CurrentBallPanel
   gameLeader: GameLeader
-  cardPanel: CardPanel
+  cardPanels: CardPanel[]
   messagePanel: MessagePanel
   startNewGameButton: StartGameButton
   updateGameEvent: Time.TimerEvent
+  player: PlayerRecord
 
   constructor() {
     super('Game')
@@ -29,6 +31,10 @@ class Game extends Scene {
 
   init() {
     this.gameLeader = new GameLeader(new RandomBag())
+    this.player = {
+      numCards: 1,
+      wolfCries: 0,
+    }
   }
 
   create() {
@@ -48,7 +54,6 @@ class Game extends Scene {
     this.startNewGameButton = new StartGameButton(this, 512, 320)
     this.events.on('startNewGame', this.startNewGame, this)
 
-    this.cardPanel = new CardPanel(this, 512, 450, new BingoCard())
     this.events.on('haveWinningCard', this.handleWinningCard, this)
 
     this.updateGameEvent = this.time.addEvent({
@@ -61,7 +66,9 @@ class Game extends Scene {
   }
 
   async startNewGame() {
+    this.player.wolfCries = 0
     this.currentBallPanel.clear()
+    this.setupCardPanels()
     await this.messagePanel.setAndClear('Starting Game!')
     this.updateGameEvent.paused = false
   }
@@ -73,27 +80,42 @@ class Game extends Scene {
       this.ballStatusPanel.updateDisplay(bb)
     } else {
       this.updateGameEvent.paused = true
-      this.currentBallPanel.gameOver()
-      await this.messagePanel.setAndClear('Game Over!')
-      await this.messagePanel.setAndClear('Nobody Won!')
-      this.ballStatusPanel.resetDisplay()
-      this.gameLeader.reset()
-      this.startNewGameButton.enable()
+      await this.endGameAndReset(['Game Over!', 'Nobody Won!'])
     }
+  }
+
+  async endGameAndReset(messages: string[]): Promise<void> {
+    this.currentBallPanel.gameOver()
+    await this.messagePanel.setAndClear(messages.at(0)!)
+    await this.messagePanel.setAndClear(messages.at(1)!)
+    this.ballStatusPanel.resetDisplay()
+    this.gameLeader.reset()
+    this.startNewGameButton.enable()
   }
 
   async handleWinningCard(card: BingoCard) {
     this.updateGameEvent.paused = true
     if (this.gameLeader.verify(card)) {
-      this.currentBallPanel.gameOver()
-      await this.messagePanel.setAndClear('Player Won!!!')
-      await this.messagePanel.setAndClear('Game Over!')
-      this.ballStatusPanel.resetDisplay()
-      this.gameLeader.reset()
-      this.startNewGameButton.enable()
+      await this.endGameAndReset(['Player Won!!!', 'Game Over!'])
     } else {
-      await this.messagePanel.setAndClear('Player cried Wolf!! ... Be careful!!')
-      this.updateGameEvent.paused = false
+      await this.messagePanel.setAndClear('Player cried Wolf!!')
+      this.player.wolfCries++
+      if (MAX_WOLF_CRIES === this.player.wolfCries) {
+        await this.endGameAndReset(['You have been kicked out!', 'Resetting game.'])
+      } else {
+        const wolfCriesLeft = MAX_WOLF_CRIES - this.player.wolfCries
+        await this.messagePanel.setAndClear(`${wolfCriesLeft} more Wolf cries and you're out.`)
+        this.updateGameEvent.paused = false
+      }
+    }
+  }
+
+  setupCardPanels(): void {
+    this.cardPanels = []
+    const deltaX = Math.floor(1024 / (this.player.numCards + 1))
+    for (let i = 0; i < this.player.numCards; i++) {
+      const card = new BingoCard()
+      this.cardPanels.push(new CardPanel(this, (i + 1) * deltaX, 400, card))
     }
   }
 }
