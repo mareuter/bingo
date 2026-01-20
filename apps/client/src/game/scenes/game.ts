@@ -12,6 +12,7 @@ import { BALL_PANEL_BACKGROUND, MAX_WOLF_CRIES, hexNumToString } from '../common
 import StartGameButton from '../game-objects/start-new-game-button'
 import BingoBall from '@repo/core/src/bingo-ball'
 import MessagePanel from '../game-objects/message-panel'
+import NumCardsSelector from '../game-objects/num-cards-selector'
 
 const sleep = (delay: number) => new Promise((resolve) => setTimeout(resolve, delay))
 
@@ -24,9 +25,14 @@ class Game extends Scene {
   startNewGameButton: StartGameButton
   updateGameEvent: Time.TimerEvent
   player: PlayerRecord
+  numCardsSelector: NumCardsSelector
 
   constructor() {
     super('Game')
+  }
+
+  preload() {
+    this.load.html('numCardsSelector', 'assets/text/num-cards-selector.html')
   }
 
   init() {
@@ -51,8 +57,16 @@ class Game extends Scene {
 
     this.messagePanel = new MessagePanel(this, 512, 66)
 
-    this.startNewGameButton = new StartGameButton(this, 512, 320)
+    this.startNewGameButton = new StartGameButton(this, 355, 320)
     this.events.on('startNewGame', this.startNewGame, this)
+    this.numCardsSelector = new NumCardsSelector(this, 545, 308)
+    this.events.on(
+      'numCardsSelected',
+      (num: number) => {
+        this.player.numCards = num
+      },
+      this,
+    )
 
     this.events.on('haveWinningCard', this.handleWinningCard, this)
 

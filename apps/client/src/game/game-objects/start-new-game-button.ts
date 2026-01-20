@@ -4,7 +4,7 @@ import { BALL_PANEL_BACKGROUND, hexNumToString } from '../common'
 const style = {
   font: '24px Arial',
   width: '200px',
-  height: '40px',
+  height: '43px',
   'background-color': hexNumToString(BALL_PANEL_BACKGROUND),
 }
 
