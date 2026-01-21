@@ -42,3 +42,12 @@ test('Exhaust and refill bag', () => {
   rb.refillBag()
   expect(rb.length).toBe(75)
 })
+
+test('Partially exhaust bag and refill', () => {
+  const rb = new RandomBag()
+  for (let i = 0; i < 30; i++) {
+    rb.getNext()
+  }
+  rb.refillBag()
+  expect(rb.length).toBe(75)
+})

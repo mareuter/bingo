@@ -33,6 +33,9 @@ class RandomBag extends BagOfBalls {
   }
 
   public refillBag(): void {
+    if (this.length) {
+      this.#balls = []
+    }
     this._setup()
   }
 }
