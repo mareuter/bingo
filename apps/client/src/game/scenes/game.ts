@@ -1,20 +1,16 @@
-import { GameObjects, Scene, Time } from 'phaser'
+import { Scene, Time } from 'phaser'
 
 import BallStatusPanel from '../game-objects/ball-status-panel'
 import CurrentBallPanel from '../game-objects/current-ball-panel'
 import GameLeader from '@repo/core/src/game-leader'
 import RandomBag from '@repo/core/src/random-bag'
-import { NoMoreBingoBallsError } from '@repo/core/src/bingo-errors'
 import CardPanel from '../game-objects/card-panel'
 import BingoCard from '@repo/core/src/bingo-card'
 import PlayerRecord from '@repo/core/src/player-record'
-import { BALL_PANEL_BACKGROUND, MAX_WOLF_CRIES, hexNumToString } from '../common'
+import { MAX_WOLF_CRIES } from '../common'
 import StartGameButton from '../game-objects/start-new-game-button'
-import BingoBall from '@repo/core/src/bingo-ball'
 import MessagePanel from '../game-objects/message-panel'
 import NumCardsSelector from '../game-objects/num-cards-selector'
-
-const sleep = (delay: number) => new Promise((resolve) => setTimeout(resolve, delay))
 
 class Game extends Scene {
   ballStatusPanel: BallStatusPanel
