@@ -7,7 +7,7 @@ const config: Types.Core.GameConfig = {
   type: AUTO,
   width: 1024,
   height: 768,
-  backgroundColor: '#0000ff',
+  backgroundColor: '#222288',
   parent: 'game-container',
   pixelArt: true,
   dom: {

@@ -1,6 +1,6 @@
 import { GameObjects, Scene } from 'phaser'
 
-import { NUMBER_PANEL_COLOR, hexNumToString } from '../common'
+import { NUMBER_PANEL_COLOR, NUMBER_PANEL_FILL_COLOR, hexNumToString } from '../common'
 
 class NumberPanel extends GameObjects.Rectangle {
   buttonText: GameObjects.Text
@@ -12,7 +12,7 @@ class NumberPanel extends GameObjects.Rectangle {
     super(scene, x, y, NumberPanel.side, NumberPanel.side)
     this.scene.add.existing(this)
     this.setStrokeStyle(2, NUMBER_PANEL_COLOR)
-    this.setFillStyle(0xffffe6)
+    this.setFillStyle(NUMBER_PANEL_FILL_COLOR)
     let fSize: number
     if (value === 'FREE') {
       fSize = 18

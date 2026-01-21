@@ -1,5 +1,6 @@
 import type { Scene } from 'phaser'
 import NumberPanel from './number-panel'
+import { NUMBER_PANEL_FILL_COLOR, NUMBER_PANEL_HIGHLIGHT_COLOR } from '../common'
 
 class NumberButton extends NumberPanel {
   isToggled: boolean = false
@@ -12,10 +13,10 @@ class NumberButton extends NumberPanel {
 
   handleClick() {
     if (this.isToggled) {
-      this.setAlpha(1)
+      this.setFillStyle(NUMBER_PANEL_FILL_COLOR)
       this.isToggled = false
     } else {
-      this.setAlpha(0.4)
+      this.setFillStyle(NUMBER_PANEL_HIGHLIGHT_COLOR)
       this.isToggled = true
     }
   }

@@ -1,5 +1,5 @@
 import { GameObjects, Scene } from 'phaser'
-import { NUMBER_PANEL_COLOR, NUMBER_PANEL_FILL_COLOR, hexNumToString } from '../common'
+import { NUMBER_PANEL_COLOR, NUMBER_PANEL_FILL_COLOR, NUMBER_PANEL_HIGHLIGHT_COLOR, hexNumToString } from '../common'
 
 class IWonButton extends GameObjects.Rectangle {
   buttonText: GameObjects.Text
@@ -33,13 +33,13 @@ class IWonButton extends GameObjects.Rectangle {
   }
 
   handleClick() {
-    this.setAlpha(0.4)
+    this.setFillStyle(NUMBER_PANEL_HIGHLIGHT_COLOR)
     console.log('I Won!')
     this.scene.events.emit('bingoIWon!')
   }
 
   fixUp() {
-    this.setAlpha(1)
+    this.setFillStyle(NUMBER_PANEL_FILL_COLOR)
   }
 }
 
