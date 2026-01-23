@@ -10,6 +10,8 @@ class CardPanel {
   scene: Scene
   x: number
   y: number
+  columnHeaders: NumberPanel[] = []
+  cardNumbers: NumberButton[] = []
   bingoCard: BingoCard
   iWonButton: IWonButton
 
@@ -21,7 +23,7 @@ class CardPanel {
 
     for (let i = 0; i < COLUMNS.length; i++) {
       const xp = (i - 2) * NumberPanel.side + this.x
-      new NumberPanel(scene, xp, this.y, COLUMNS[i]!)
+      this.columnHeaders.push(new NumberPanel(scene, xp, this.y, COLUMNS[i]!))
     }
 
     // this.scene.add.existing(this)
@@ -36,7 +38,7 @@ class CardPanel {
         } else {
           value = bv.toString()
         }
-        new NumberButton(this.scene, xp, yp, value)
+        this.cardNumbers.push(new NumberButton(this.scene, xp, yp, value))
       }
     }
     const yp = 6 * NumberPanel.side + this.y
@@ -46,8 +48,22 @@ class CardPanel {
   }
 
   handleWinningCard() {
-    console.log('Winning card being sent')
+    console.log(`Winning card being sent (${this})`)
     this.scene.events.emit('haveWinningCard', this.bingoCard)
+  }
+
+  destroy() {
+    this.scene.events.off('bingoIWon!')
+    this.iWonButton.buttonText.destroy()
+    this.iWonButton.destroy()
+    this.cardNumbers.forEach((cardNumber) => {
+      cardNumber.buttonText.destroy()
+      cardNumber.destroy()
+    })
+    this.columnHeaders.forEach((columnHeader) => {
+      columnHeader.buttonText.destroy()
+      columnHeader.destroy()
+    })
   }
 }
 

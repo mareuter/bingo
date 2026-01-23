@@ -66,20 +66,24 @@ class Game extends Scene {
 
     this.events.on('haveWinningCard', this.handleWinningCard, this)
 
-    this.updateGameEvent = this.time.addEvent({
-      delay: 5000,
+    this.updateGameEvent = new Time.TimerEvent({
+      delay: 3000,
       callback: () => this.announceBall(),
       callbackScope: this,
       loop: !this.gameLeader.isGameOver(),
     })
-    this.updateGameEvent.paused = true
+    // this.time.addEvent(this.updateGameEvent)
+    // this.updateGameEvent.paused = true
   }
 
   async startNewGame() {
+    // this.time.addEvent(this.updateGameEvent)
+    // this.updateGameEvent.paused = true
     this.player.wolfCries = 0
     this.currentBallPanel.clear()
     this.setupCardPanels()
     await this.messagePanel.setAndClear('Starting Game!')
+    this.time.addEvent(this.updateGameEvent)
     this.updateGameEvent.paused = false
   }
 
@@ -95,12 +99,17 @@ class Game extends Scene {
   }
 
   async endGameAndReset(messages: string[]): Promise<void> {
+    this.time.removeEvent(this.updateGameEvent)
     this.currentBallPanel.gameOver()
     await this.messagePanel.setAndClear(messages.at(0)!)
     await this.messagePanel.setAndClear(messages.at(1)!)
     this.ballStatusPanel.resetDisplay()
+    this.cardPanels.forEach((cardPanel) => {
+      cardPanel.destroy()
+    })
     this.gameLeader.reset()
     this.startNewGameButton.enable()
+    // console.log(`B: ${this.updateGameEvent.paused}`)
   }
 
   async handleWinningCard(card: BingoCard) {
