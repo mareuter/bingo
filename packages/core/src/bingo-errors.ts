@@ -13,3 +13,11 @@ export class NoMoreBingoBallsError extends BingoError {
     Object.setPrototypeOf(this, NoMoreBingoBallsError.prototype)
   }
 }
+
+export class BingoCardAlreadySignedError extends BingoError {
+  constructor(message: string) {
+    super(message)
+    this.name = 'BingoCardAlreadySignedError'
+    Object.setPrototypeOf(this, BingoCardAlreadySignedError.prototype)
+  }
+}

@@ -15,6 +15,7 @@
         "@repo/eslint-config": "workspace:*",
         "@repo/typescript-config": "workspace:*",
         "@repo/vitest-config": "workspace:*",
+        "@types/node": "^22.19.3",
         "@vitest/coverage-istanbul": "^4.0.16",
         "eslint": "^9.39.2",
         "typescript": "latest",

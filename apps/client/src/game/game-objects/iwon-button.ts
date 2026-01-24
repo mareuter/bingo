@@ -5,9 +5,11 @@ class IWonButton extends GameObjects.Rectangle {
   buttonText: GameObjects.Text
   #fontSize: number = 30
   #fontPadding: number = 2
+  #id: string
 
-  constructor(scene: Scene, x: number, y: number, width: number, height: number) {
+  constructor(scene: Scene, x: number, y: number, width: number, height: number, id: string) {
     super(scene, x, y, width, height)
+    this.#id = id
     this.scene.add.existing(this)
     this.setStrokeStyle(2, NUMBER_PANEL_COLOR)
     this.setFillStyle(NUMBER_PANEL_FILL_COLOR)
@@ -35,7 +37,7 @@ class IWonButton extends GameObjects.Rectangle {
   handleClick() {
     this.setFillStyle(NUMBER_PANEL_HIGHLIGHT_COLOR)
     console.log('I Won!')
-    this.scene.events.emit('bingoIWon!')
+    this.scene.events.emit('bingoIWon!', this.#id)
   }
 
   fixUp() {

@@ -1,9 +1,11 @@
 import BingoBall from './bingo-ball'
+import { BingoCardAlreadySignedError } from './bingo-errors'
 import { shuffle } from './helpers'
 
 class BingoCard {
   public static SIZE: number = 5
   public boardValues: BingoBall[][] = []
+  #signature: string | undefined = undefined
 
   constructor() {
     for (let i = 0; i < BingoCard.SIZE; i++) {
@@ -20,6 +22,18 @@ class BingoCard {
       }
     }
     this.boardValues[2]![2]! = new BingoBall(BingoBall.FREE_SPACE)
+  }
+
+  getSignature(): string | undefined {
+    return this.#signature
+  }
+
+  setSignature(signature: string) {
+    if (this.#signature === undefined) {
+      this.#signature = signature
+    } else {
+      throw new BingoCardAlreadySignedError('Cannot sign Bingo card again!')
+    }
   }
 }
 

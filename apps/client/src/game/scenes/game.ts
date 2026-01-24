@@ -134,6 +134,7 @@ class Game extends Scene {
     const deltaX = Math.floor(1024 / (this.player.numCards + 1))
     for (let i = 0; i < this.player.numCards; i++) {
       const card = new BingoCard()
+      this.gameLeader.signCard(card)
       this.cardPanels.push(new CardPanel(this, (i + 1) * deltaX, 400, card))
     }
   }

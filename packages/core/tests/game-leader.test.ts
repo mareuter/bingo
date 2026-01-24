@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test } from 'vitest'
+import { beforeEach, describe, expect, test, vi } from 'vitest'
 
 import GameLeader from '../src/game-leader'
 import BingoBall from '../src/bingo-ball'
@@ -124,4 +124,12 @@ test('Game state checks', () => {
   expect(gl.isWaiting()).toBeTruthy()
   expect(gl.isPlaying()).toBeFalsy()
   expect(gl.isGameOver()).toBeFalsy()
+})
+
+test('Sign Bingo card', () => {
+  const uuidSpy = vi.spyOn(crypto, 'randomUUID')
+  const gl = runGame(new RandomBag())
+  const card = new BingoCard()
+  gl.signCard(card)
+  expect(uuidSpy).toHaveBeenCalledOnce()
 })

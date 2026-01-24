@@ -72,6 +72,9 @@ importers:
       '@repo/vitest-config':
         specifier: workspace:*
         version: link:../vitest-config
+      '@types/node':
+        specifier: ^22.19.3
+        version: 22.19.3
       '@vitest/coverage-istanbul':
         specifier: ^4.0.16
         version: 4.0.16(vitest@4.0.16)
@@ -83,7 +86,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^4.0.16
-        version: 4.0.16(@types/node@25.0.3)(@vitest/ui@4.0.16)(jsdom@27.4.0)(yaml@2.8.2)
+        version: 4.0.16(@types/node@22.19.3)(@vitest/ui@4.0.16)(jsdom@27.4.0)(yaml@2.8.2)
 
   packages/eslint-config:
     devDependencies:
@@ -3019,7 +3022,7 @@ snapshots:
       magicast: 0.5.1
       obug: 2.1.1
       tinyrainbow: 3.0.3
-      vitest: 4.0.16(@types/node@25.0.3)(@vitest/ui@4.0.16)(jsdom@27.4.0)(yaml@2.8.2)
+      vitest: 4.0.16(@types/node@22.19.3)(@vitest/ui@4.0.16)(jsdom@27.4.0)(yaml@2.8.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -3074,7 +3077,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vitest: 4.0.16(@types/node@25.0.3)(@vitest/ui@4.0.16)(jsdom@27.4.0)(yaml@2.8.2)
+      vitest: 4.0.16(@types/node@22.19.3)(@vitest/ui@4.0.16)(jsdom@27.4.0)(yaml@2.8.2)
 
   '@vitest/utils@4.0.16':
     dependencies:

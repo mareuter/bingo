@@ -64,6 +64,10 @@ class GameLeader {
     this.#announcedBalls = [new BingoBall(BingoBall.FREE_SPACE)]
   }
 
+  signCard(card: BingoCard): void {
+    card.setSignature(crypto.randomUUID())
+  }
+
   verify(card: BingoCard): boolean {
     let rowMatches = 0
     let columnMatches = 0

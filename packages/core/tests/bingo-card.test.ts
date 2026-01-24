@@ -3,6 +3,7 @@ import { expect, test, vi } from 'vitest'
 import BingoBall from '../src/bingo-ball'
 import BingoCard from '../src/bingo-card'
 import * as helpers from '../src/helpers'
+import { BingoCardAlreadySignedError } from '../src/bingo-errors'
 
 vi.spyOn(helpers, 'shuffle').mockImplementation((r) => {
   if (r[0] === 1) {
@@ -55,4 +56,18 @@ test('Board values after creation', () => {
     new BingoBall(72),
     new BingoBall(64),
   ])
+})
+
+test('Sign a Bingo card', () => {
+  const bc = new BingoCard()
+  const signature = '546264-5f73a9-637ef-43abdc'
+  bc.setSignature(signature)
+  expect(bc.getSignature()).toBe(signature)
+})
+
+test('Twice signing a Bingo card throws an error', () => {
+  const bc = new BingoCard()
+  const signature = '546264-5f73a9-637ef-43abdc'
+  bc.setSignature(signature)
+  expect(() => bc.setSignature(signature)).toThrow(BingoCardAlreadySignedError)
 })

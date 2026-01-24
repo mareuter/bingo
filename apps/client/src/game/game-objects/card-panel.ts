@@ -43,13 +43,15 @@ class CardPanel {
     }
     const yp = 6 * NumberPanel.side + this.y
     const width = COLUMNS.length * NumberPanel.side
-    this.iWonButton = new IWonButton(this.scene, this.x, yp, width, NumberPanel.side)
+    this.iWonButton = new IWonButton(this.scene, this.x, yp, width, NumberPanel.side, this.bingoCard.getSignature()!)
     this.scene.events.on('bingoIWon!', this.handleWinningCard, this)
   }
 
-  handleWinningCard() {
-    console.log(`Winning card being sent (${this})`)
-    this.scene.events.emit('haveWinningCard', this.bingoCard)
+  handleWinningCard(id: string) {
+    if (id === this.bingoCard.getSignature()) {
+      console.log(`Winning card being sent`)
+      this.scene.events.emit('haveWinningCard', this.bingoCard)
+    }
   }
 
   destroy() {
