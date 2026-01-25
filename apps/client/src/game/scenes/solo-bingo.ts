@@ -12,7 +12,7 @@ import StartGameButton from '../game-objects/start-new-game-button'
 import MessagePanel from '../game-objects/message-panel'
 import NumCardsSelector from '../game-objects/num-cards-selector'
 
-class Game extends Scene {
+class SoloBingo extends Scene {
   ballStatusPanel: BallStatusPanel
   currentBallPanel: CurrentBallPanel
   gameLeader: GameLeader
@@ -74,13 +74,9 @@ class Game extends Scene {
       callbackScope: this,
       loop: !this.gameLeader.isGameOver(),
     })
-    // this.time.addEvent(this.updateGameEvent)
-    // this.updateGameEvent.paused = true
   }
 
   async startNewGame() {
-    // this.time.addEvent(this.updateGameEvent)
-    // this.updateGameEvent.paused = true
     this.player.wolfCries = 0
     this.currentBallPanel.clear()
     this.setupCardPanels()
@@ -111,7 +107,6 @@ class Game extends Scene {
     })
     this.gameLeader.reset()
     this.startNewGameButton.enable()
-    // console.log(`B: ${this.updateGameEvent.paused}`)
   }
 
   async handleWinningCard(card: BingoCard) {
@@ -142,4 +137,4 @@ class Game extends Scene {
   }
 }
 
-export default Game
+export default SoloBingo
