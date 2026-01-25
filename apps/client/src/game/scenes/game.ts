@@ -28,6 +28,7 @@ class Game extends Scene {
   }
 
   preload() {
+    this.load.image('background', 'assets/images/bingo-background.png')
     this.load.html('numCardsSelector', 'assets/text/num-cards-selector.html')
   }
 
@@ -40,6 +41,7 @@ class Game extends Scene {
   }
 
   create() {
+    this.add.image(512, 384, 'background')
     const statusX = 602
     const statusY = 200
     this.ballStatusPanel = new BallStatusPanel(this, statusX, statusY)
