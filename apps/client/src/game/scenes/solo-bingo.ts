@@ -24,11 +24,10 @@ class SoloBingo extends Scene {
   numCardsSelector: NumCardsSelector
 
   constructor() {
-    super('Game')
+    super('SoloBingo')
   }
 
   preload() {
-    this.load.image('background', 'assets/images/bingo-background.png')
     this.load.html('numCardsSelector', 'assets/text/num-cards-selector.html')
   }
 
