@@ -2,6 +2,7 @@ import { AUTO, Types } from 'phaser'
 
 import SoloBingo from './scenes/solo-bingo'
 import MainMenu from './scenes/main-menu'
+import Splash from './scenes/splash'
 
 const config: Types.Core.GameConfig = {
   type: AUTO,
@@ -13,7 +14,7 @@ const config: Types.Core.GameConfig = {
   dom: {
     createContainer: true,
   },
-  scene: [MainMenu, SoloBingo],
+  scene: [Splash, MainMenu, SoloBingo],
 }
 
 const StartGame = (parent: string) => {

@@ -64,7 +64,7 @@ class MainMenu extends Scene {
     this.tweens.add({
       targets: overlay,
       alpha: 1,
-      duration: 1000,
+      duration: 3000,
       ease: 'circ.in',
       onComplete: () => {
         this.scene.start(key)
