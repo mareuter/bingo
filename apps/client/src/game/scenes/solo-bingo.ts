@@ -11,8 +11,10 @@ import { MAX_WOLF_CRIES } from '../common'
 import StartGameButton from '../game-objects/start-new-game-button'
 import MessagePanel from '../game-objects/message-panel'
 import NumCardsSelector from '../game-objects/num-cards-selector'
+import SceneInfo from '../scene-info'
 
 class SoloBingo extends Scene {
+  #sceneInfo: SceneInfo
   ballStatusPanel: BallStatusPanel
   currentBallPanel: CurrentBallPanel
   gameLeader: GameLeader
@@ -40,7 +42,8 @@ class SoloBingo extends Scene {
   }
 
   create() {
-    this.add.image(512, 384, 'background')
+    this.#sceneInfo = new SceneInfo(this)
+    this.add.image(this.#sceneInfo.centerWidth, this.#sceneInfo.centerHeight, 'background')
     const statusX = 602
     const statusY = 200
     this.ballStatusPanel = new BallStatusPanel(this, statusX, statusY)
@@ -52,7 +55,7 @@ class SoloBingo extends Scene {
       this.ballStatusPanel.height,
     )
 
-    this.messagePanel = new MessagePanel(this, 512, 66)
+    this.messagePanel = new MessagePanel(this, this.#sceneInfo.centerWidth, 66)
 
     this.startNewGameButton = new StartGameButton(this, 355, 320)
     this.events.on('startNewGame', this.startNewGame, this)
@@ -127,7 +130,7 @@ class SoloBingo extends Scene {
 
   setupCardPanels(): void {
     this.cardPanels = []
-    const deltaX = Math.floor(1024 / (this.player.numCards + 1))
+    const deltaX = Math.floor(this.#sceneInfo.width / (this.player.numCards + 1))
     for (let i = 0; i < this.player.numCards; i++) {
       const card = new BingoCard()
       this.gameLeader.signCard(card)

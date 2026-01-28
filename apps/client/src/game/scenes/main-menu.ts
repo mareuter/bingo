@@ -1,10 +1,8 @@
 import { GameObjects, Scene } from 'phaser'
+import SceneInfo from '../scene-info'
 
 class MainMenu extends Scene {
-  #width!: number
-  #height!: number
-  #center_width!: number
-  #center_height!: number
+  #sceneInfo: SceneInfo
   title: GameObjects.Image
   soloItem: GameObjects.Image
   vsCpuItem: GameObjects.Image
@@ -40,16 +38,13 @@ class MainMenu extends Scene {
   }
 
   create() {
-    this.#width = +this.sys.game.config.width
-    this.#height = +this.sys.game.config.height
-    this.#center_width = this.#width / 2
-    this.#center_height = this.#height / 2
-    this.add.image(this.#center_width, this.#center_height, 'background')
-    const deltaY = Math.floor(this.#height / 5)
-    this.title = this.add.image(this.#center_width, deltaY, 'main-menu')
-    this.soloItem = this.add.image(this.#center_width, deltaY * 2, 'solo-menuitem')
-    this.vsCpuItem = this.add.image(this.#center_width, deltaY * 3, 'vs-cpu-menuitem')
-    this.multiplayerItem = this.add.image(this.#center_width, deltaY * 4, 'multiplayer-menuitem')
+    this.#sceneInfo = new SceneInfo(this)
+    this.add.image(this.#sceneInfo.centerWidth, this.#sceneInfo.centerHeight, 'background')
+    const deltaY = Math.floor(this.#sceneInfo.height / 5)
+    this.title = this.add.image(this.#sceneInfo.centerWidth, deltaY, 'main-menu')
+    this.soloItem = this.add.image(this.#sceneInfo.centerWidth, deltaY * 2, 'solo-menuitem')
+    this.vsCpuItem = this.add.image(this.#sceneInfo.centerWidth, deltaY * 3, 'vs-cpu-menuitem')
+    this.multiplayerItem = this.add.image(this.#sceneInfo.centerWidth, deltaY * 4, 'multiplayer-menuitem')
 
     this._setActions(this.soloItem, 'SoloBingo')
   }
@@ -57,7 +52,7 @@ class MainMenu extends Scene {
   startGame(key: string): void {
     const fadecolor = 0x000000
     const overlay = this.add
-      .rectangle(0, 0, this.#width, this.#height, fadecolor)
+      .rectangle(0, 0, this.#sceneInfo.width, this.#sceneInfo.height, fadecolor)
       .setOrigin(0)
       .setAlpha(0)
       .setDepth(9999)
