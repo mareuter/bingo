@@ -29,10 +29,6 @@ class SoloBingo extends Scene {
     super('SoloBingo')
   }
 
-  preload() {
-    this.load.html('numCardsSelector', 'assets/text/num-cards-selector.html')
-  }
-
   init() {
     this.gameLeader = new GameLeader(new RandomBag())
     this.player = {

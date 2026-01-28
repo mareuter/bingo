@@ -28,15 +28,6 @@ class MainMenu extends Scene {
     })
   }
 
-  preload() {
-    this.load.setPath('assets/images')
-    this.load.image('background', 'bingo-background.png')
-    this.load.image('main-menu', 'main-menu.png')
-    this.load.image('solo-menuitem', 'solo-menuitem.png')
-    this.load.image('vs-cpu-menuitem', 'vs-cpu-menuitem.png')
-    this.load.image('multiplayer-menuitem', 'multiplayer-menuitem.png')
-  }
-
   create() {
     this.#sceneInfo = new SceneInfo(this)
     this.add.image(this.#sceneInfo.centerWidth, this.#sceneInfo.centerHeight, 'background')

@@ -1,0 +1,64 @@
+import { GameObjects, Scene } from 'phaser'
+
+class BootLoader extends Scene {
+  progressBar!: GameObjects.Graphics
+  loadBar!: GameObjects.Graphics
+
+  constructor() {
+    super('BootLoader')
+  }
+
+  preload() {
+    console.log('In bootloader')
+    console.log(`${this.cameras.main.width}, ${this.cameras.main.height}`)
+    this.createBars()
+    this.load.on(
+      'progress',
+      (value: number) => {
+        console.log(`${value}`)
+        this.progressBar.clear()
+        this.progressBar.fillStyle(0x88d24c, 1)
+        this.progressBar.fillRect(
+          this.cameras.main.width / 4,
+          this.cameras.main.height / 2 - 16,
+          (this.cameras.main.width / 2) * value,
+          16,
+        )
+      },
+      this,
+    )
+    this.load.on(
+      'complete',
+      () => {
+        this.scene.start('Splash')
+      },
+      this,
+    )
+
+    this.load.image('background', 'assets/images/bingo-background.png')
+    this.load.image('title-logo', 'assets/images/title-logo.png')
+    this.load.image('main-menu', 'assets/images/main-menu.png')
+    this.load.image('solo-menuitem', 'assets/images/solo-menuitem.png')
+    this.load.image('vs-cpu-menuitem', 'assets/images/vs-cpu-menuitem.png')
+    this.load.image('multiplayer-menuitem', 'assets/images/multiplayer-menuitem.png')
+    this.load.html('numCardsSelector', 'assets/text/num-cards-selector.html')
+
+    console.log('Done bootloader')
+  }
+
+  create() {}
+
+  createBars() {
+    this.loadBar = this.add.graphics()
+    this.loadBar.fillStyle(0x008483, 1)
+    this.loadBar.fillRect(
+      this.cameras.main.width / 4 - 2,
+      this.cameras.main.height / 2 - 18,
+      this.cameras.main.width / 2 + 4,
+      20,
+    )
+    this.progressBar = this.add.graphics()
+  }
+}
+
+export default BootLoader

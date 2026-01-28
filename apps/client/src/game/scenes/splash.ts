@@ -9,12 +9,6 @@ class Splash extends Scene {
     super('Splash')
   }
 
-  preload() {
-    this.load.setPath('assets/images')
-    this.load.image('background', 'bingo-background.png')
-    this.load.image('title-logo', 'title-logo.png')
-  }
-
   create() {
     this.#sceneInfo = new SceneInfo(this)
     this.add.image(this.#sceneInfo.centerWidth, this.#sceneInfo.centerHeight, 'background')
