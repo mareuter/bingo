@@ -42,6 +42,7 @@ class BootLoader extends Scene {
     this.load.image('vs-cpu-menuitem', 'assets/images/vs-cpu-menuitem.png')
     this.load.image('multiplayer-menuitem', 'assets/images/multiplayer-menuitem.png')
     this.load.html('numCardsSelector', 'assets/text/num-cards-selector.html')
+    this.load.font('Roboto Regular', 'assets/fonts/Roboto-Regular.ttf')
 
     console.log('Done bootloader')
   }

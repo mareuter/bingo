@@ -51,7 +51,7 @@ class SoloBingo extends Scene {
       this.ballStatusPanel.height,
     )
 
-    this.messagePanel = new MessagePanel(this, this.#sceneInfo.centerWidth, 66)
+    this.messagePanel = new MessagePanel(this, this.#sceneInfo.centerWidth, 25)
 
     this.startNewGameButton = new StartGameButton(this, 355, 320)
     this.events.on('startNewGame', this.startNewGame, this)
