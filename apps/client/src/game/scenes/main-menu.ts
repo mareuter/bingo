@@ -1,5 +1,6 @@
 import { GameObjects, Scene } from 'phaser'
 import SceneInfo from '../scene-info'
+import { GAME_KEYS } from '../common'
 
 class MainMenu extends Scene {
   #sceneInfo: SceneInfo
@@ -9,7 +10,7 @@ class MainMenu extends Scene {
   multiplayerItem: GameObjects.Image
 
   constructor() {
-    super('MainMenu')
+    super(GAME_KEYS.MAINMENU)
   }
 
   _setActions(item: GameObjects.Image, key: string): void {

@@ -8,3 +8,11 @@ export const MAX_WOLF_CRIES = 3
 export function hexNumToString(hex: number): string {
   return `#${hex.toString(16)}`
 }
+
+export const GAME_KEYS = {
+  BOOTLOADER: 'BootLoader',
+  SPLASH: 'Splash',
+  // MAINMENU: 'MainMenu',
+  MAINMENU: 'SoloBingo',
+  SOLOBINGO: 'SoloBingo',
+}

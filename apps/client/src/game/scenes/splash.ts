@@ -1,12 +1,13 @@
 import { GameObjects, Scene } from 'phaser'
 import SceneInfo from '../scene-info'
+import { GAME_KEYS } from '../common'
 
 class Splash extends Scene {
   logo: GameObjects.Image
   #sceneInfo: SceneInfo
 
   constructor() {
-    super('Splash')
+    super(GAME_KEYS.SPLASH)
   }
 
   create() {
@@ -45,7 +46,7 @@ class Splash extends Scene {
       duration: 3000,
       ease: 'quad.inOut',
       onComplete: () => {
-        this.scene.start('MainMenu')
+        this.scene.start(GAME_KEYS.MAINMENU)
         this.tweens.add({
           targets: overlay,
           alpha: 0,

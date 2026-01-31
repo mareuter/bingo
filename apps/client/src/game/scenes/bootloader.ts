@@ -1,11 +1,12 @@
 import { GameObjects, Scene } from 'phaser'
+import { GAME_KEYS } from '../common'
 
 class BootLoader extends Scene {
   progressBar!: GameObjects.Graphics
   loadBar!: GameObjects.Graphics
 
   constructor() {
-    super('BootLoader')
+    super(GAME_KEYS.BOOTLOADER)
   }
 
   preload() {
@@ -30,7 +31,7 @@ class BootLoader extends Scene {
     this.load.on(
       'complete',
       () => {
-        this.scene.start('Splash')
+        this.scene.start(GAME_KEYS.MAINMENU)
       },
       this,
     )
@@ -41,6 +42,8 @@ class BootLoader extends Scene {
     this.load.image('solo-menuitem', 'assets/images/solo-menuitem.png')
     this.load.image('vs-cpu-menuitem', 'assets/images/vs-cpu-menuitem.png')
     this.load.image('multiplayer-menuitem', 'assets/images/multiplayer-menuitem.png')
+    this.load.image('status-board', 'assets/images/status-board.png')
+    this.load.image('bingo-ball', 'assets/images/bingo-ball.png')
     this.load.html('numCardsSelector', 'assets/text/num-cards-selector.html')
     this.load.font('Roboto Regular', 'assets/fonts/Roboto-Regular.ttf')
 

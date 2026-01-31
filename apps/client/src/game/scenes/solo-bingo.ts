@@ -1,22 +1,20 @@
 import { Scene, Time } from 'phaser'
 
-import BallStatusPanel from '../game-objects/ball-status-panel'
-import CurrentBallPanel from '../game-objects/current-ball-panel'
 import GameLeader from '@repo/core/src/game-leader'
 import RandomBag from '@repo/core/src/random-bag'
 import CardPanel from '../game-objects/card-panel'
 import BingoCard from '@repo/core/src/bingo-card'
 import PlayerRecord from '@repo/core/src/player-record'
-import { MAX_WOLF_CRIES } from '../common'
+import { GAME_KEYS, MAX_WOLF_CRIES } from '../common'
 import StartGameButton from '../game-objects/start-new-game-button'
 import MessagePanel from '../game-objects/message-panel'
 import NumCardsSelector from '../game-objects/num-cards-selector'
 import SceneInfo from '../scene-info'
+import StatusPanel from '../game-objects/status-panel'
 
 class SoloBingo extends Scene {
   #sceneInfo: SceneInfo
-  ballStatusPanel: BallStatusPanel
-  currentBallPanel: CurrentBallPanel
+  statusPanel: StatusPanel
   gameLeader: GameLeader
   cardPanels: CardPanel[]
   messagePanel: MessagePanel
@@ -26,7 +24,7 @@ class SoloBingo extends Scene {
   numCardsSelector: NumCardsSelector
 
   constructor() {
-    super('SoloBingo')
+    super(GAME_KEYS.SOLOBINGO)
   }
 
   init() {
@@ -40,18 +38,9 @@ class SoloBingo extends Scene {
   create() {
     this.#sceneInfo = new SceneInfo(this)
     this.add.image(this.#sceneInfo.centerWidth, this.#sceneInfo.centerHeight, 'background')
-    const statusX = 602
-    const statusY = 200
-    this.ballStatusPanel = new BallStatusPanel(this, statusX, statusY)
-    this.currentBallPanel = new CurrentBallPanel(
-      this,
-      statusX,
-      statusY,
-      this.ballStatusPanel.fullWidth / 2,
-      this.ballStatusPanel.height,
-    )
 
     this.messagePanel = new MessagePanel(this, this.#sceneInfo.centerWidth, 25)
+    this.statusPanel = new StatusPanel(this, this.#sceneInfo.centerWidth, 170)
 
     this.startNewGameButton = new StartGameButton(this, 355, 320)
     this.events.on('startNewGame', this.startNewGame, this)
@@ -76,7 +65,7 @@ class SoloBingo extends Scene {
 
   async startNewGame() {
     this.player.wolfCries = 0
-    this.currentBallPanel.clear()
+    this.statusPanel.clear()
     this.setupCardPanels()
     await this.messagePanel.setAndClear('Starting Game!')
     this.time.addEvent(this.updateGameEvent)
@@ -85,10 +74,8 @@ class SoloBingo extends Scene {
 
   async announceBall() {
     const bb = this.gameLeader.announceBall()
-    this.currentBallPanel.updateBall(bb)
-    if (!this.gameLeader.isGameOver()) {
-      this.ballStatusPanel.updateDisplay(bb)
-    } else {
+    this.statusPanel.updateStatus(bb)
+    if (this.gameLeader.isGameOver()) {
       this.updateGameEvent.paused = true
       await this.endGameAndReset(['Game Over!', 'Nobody Won!'])
     }
@@ -96,10 +83,10 @@ class SoloBingo extends Scene {
 
   async endGameAndReset(messages: string[]): Promise<void> {
     this.time.removeEvent(this.updateGameEvent)
-    this.currentBallPanel.gameOver()
+    this.statusPanel.gameOver()
     await this.messagePanel.setAndClear(messages.at(0)!)
     await this.messagePanel.setAndClear(messages.at(1)!)
-    this.ballStatusPanel.resetDisplay()
+    this.statusPanel.resetDisplay()
     this.cardPanels.forEach((cardPanel) => {
       cardPanel.destroy()
     })
