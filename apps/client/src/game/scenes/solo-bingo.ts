@@ -11,11 +11,13 @@ import NumCardsSelector from '../game-objects/num-cards-selector'
 import SceneInfo from '../scene-info'
 import StatusPanel from '../game-objects/status-panel'
 import CardHolder from '../game-objects/card-holder'
+import Toolbar from '../game-objects/toolbar'
 
 class SoloBingo extends Scene {
   #sceneInfo: SceneInfo
   statusPanel: StatusPanel
   gameLeader: GameLeader
+  toolbar: Toolbar
   messagePanel: MessagePanel
   startNewGameButton: StartGameButton
   cardHolder: CardHolder
@@ -39,6 +41,7 @@ class SoloBingo extends Scene {
     this.#sceneInfo = new SceneInfo(this)
     this.add.image(this.#sceneInfo.centerWidth, this.#sceneInfo.centerHeight, 'background')
 
+    this.toolbar = new Toolbar(this, 70, 25)
     this.messagePanel = new MessagePanel(this, this.#sceneInfo.centerWidth, 25)
     this.statusPanel = new StatusPanel(this, this.#sceneInfo.centerWidth, 170)
 
@@ -89,6 +92,7 @@ class SoloBingo extends Scene {
     this.statusPanel.resetDisplay()
     this.cardHolder.destroy()
     this.gameLeader.reset()
+    this.events.emit('endGame')
     this.startNewGameButton.enable()
   }
 
