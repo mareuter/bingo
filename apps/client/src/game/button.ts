@@ -2,37 +2,25 @@ import { GameObjects, Scene } from 'phaser'
 
 class Button {
   protected scene: Scene
-  #image: GameObjects.Image
+  protected image: GameObjects.Image
   protected disableAlpha: number | undefined
   protected disableTint: number | undefined
   protected hoverTint: number | undefined
 
   constructor(scene: Scene, x: number, y: number, imageName: string) {
     this.scene = scene
-    this.#image = this.scene.add.image(x, y, imageName)
-    this.#image.setInteractive()
+    this.image = this.scene.add.image(x, y, imageName)
+    this.image.setInteractive()
 
-    this.#image.on('pointerover', () => {
-      this.#image.setTint(this.hoverTint)
+    this.image.on('pointerover', () => {
+      this.image.setTint(this.hoverTint)
     })
 
-    this.#image.on('pointerout', () => {
-      this.#image.clearTint()
+    this.image.on('pointerout', () => {
+      this.image.clearTint()
     })
 
-    this.#image.on('pointerdown', () => this.onClick())
-  }
-
-  disable() {
-    this.#image.disableInteractive()
-    this.#image.setTint(this.disableTint)
-    this.#image.setAlpha(this.disableAlpha)
-  }
-
-  enable() {
-    this.#image.setInteractive()
-    this.#image.clearTint()
-    this.#image.clearAlpha()
+    this.image.on('pointerdown', () => this.onClick())
   }
 
   onClick() {
