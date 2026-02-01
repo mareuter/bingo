@@ -1,33 +1,20 @@
 import { GameObjects, Scene } from 'phaser'
-import { NUMBER_PANEL_COLOR, NUMBER_PANEL_FILL_COLOR, NUMBER_PANEL_HIGHLIGHT_COLOR, hexNumToString } from '../common'
+import { NUMBER_PANEL_FILL_COLOR, NUMBER_PANEL_HIGHLIGHT_COLOR } from '../common'
+import { CARD_NUMBER_FONT } from '../font-configs'
 
 class IWonButton extends GameObjects.Rectangle {
   buttonText: GameObjects.Text
-  #fontSize: number = 30
-  #fontPadding: number = 2
   #id: string
 
   constructor(scene: Scene, x: number, y: number, width: number, height: number, id: string) {
     super(scene, x, y, width, height)
     this.#id = id
     this.scene.add.existing(this)
-    this.setStrokeStyle(2, NUMBER_PANEL_COLOR)
+
+    this.setStrokeStyle(2, CARD_NUMBER_FONT.color.stringToNumber())
     this.setFillStyle(NUMBER_PANEL_FILL_COLOR)
     this.buttonText = this.scene.add
-      .text(this.x, this.y, 'Bingo! I Won!', {
-        fontFamily: 'Arial Black',
-        fontSize: this.#fontSize,
-        color: hexNumToString(NUMBER_PANEL_COLOR),
-        stroke: '#000000',
-        strokeThickness: 2,
-        align: 'center',
-        padding: {
-          left: this.#fontPadding,
-          right: this.#fontPadding,
-          top: this.#fontPadding,
-          bottom: this.#fontPadding,
-        },
-      })
+      .text(this.x, this.y, 'Bingo! I Won!', CARD_NUMBER_FONT.toPhaserFontConfig())
       .setOrigin(0.5)
     this.setInteractive()
     this.on('pointerdown', this.handleClick, this)

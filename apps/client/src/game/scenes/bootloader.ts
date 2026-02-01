@@ -46,6 +46,7 @@ class BootLoader extends Scene {
     this.load.image('bingo-ball', 'assets/images/bingo-ball.png')
     this.load.html('numCardsSelector', 'assets/text/num-cards-selector.html')
     this.load.font('Roboto Regular', 'assets/fonts/Roboto-Regular.ttf')
+    this.load.font('Ewert Regular', 'assets/fonts/Ewert-Regular.ttf')
 
     console.log('Done bootloader')
   }

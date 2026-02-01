@@ -1,41 +1,31 @@
 import { GameObjects, Scene } from 'phaser'
 
-import { NUMBER_PANEL_COLOR, NUMBER_PANEL_FILL_COLOR, hexNumToString } from '../common'
+import { NUMBER_PANEL_FILL_COLOR } from '../common'
+import { CARD_COLUMN_FONT, CARD_FREE_FONT, CARD_NUMBER_FONT } from '../font-configs'
+import { COLUMNS } from '@repo/core/src/constants'
 
 class NumberPanel extends GameObjects.Rectangle {
   buttonText: GameObjects.Text
-  #fontSize: number = 30
-  #fontPadding: number = 2
   static side: number = 50
 
   constructor(scene: Scene, x: number, y: number, value: string) {
     super(scene, x, y, NumberPanel.side, NumberPanel.side)
     this.scene.add.existing(this)
-    this.setStrokeStyle(2, NUMBER_PANEL_COLOR)
-    this.setFillStyle(NUMBER_PANEL_FILL_COLOR)
-    let fSize: number
+    let fontConfig: object
+    let offsetY = 0
     if (value === 'FREE') {
-      fSize = 18
+      fontConfig = CARD_FREE_FONT.toPhaserFontConfig()
+    } else if (COLUMNS.find((u) => u === value) !== undefined) {
+      fontConfig = CARD_COLUMN_FONT.toPhaserFontConfig()
+      offsetY = 4
     } else {
-      fSize = this.#fontSize
+      fontConfig = CARD_NUMBER_FONT.toPhaserFontConfig()
     }
 
-    this.buttonText = this.scene.add
-      .text(this.x, this.y, value, {
-        fontFamily: 'Arial Black',
-        fontSize: fSize,
-        color: hexNumToString(NUMBER_PANEL_COLOR),
-        stroke: '#000000',
-        strokeThickness: 2,
-        align: 'center',
-        padding: {
-          left: this.#fontPadding,
-          right: this.#fontPadding,
-          top: this.#fontPadding,
-          bottom: this.#fontPadding,
-        },
-      })
-      .setOrigin(0.5)
+    this.setStrokeStyle(2, CARD_NUMBER_FONT.color.stringToNumber())
+    this.setFillStyle(NUMBER_PANEL_FILL_COLOR)
+
+    this.buttonText = this.scene.add.text(this.x, this.y - offsetY, value, fontConfig).setOrigin(0.5)
   }
 }
 
