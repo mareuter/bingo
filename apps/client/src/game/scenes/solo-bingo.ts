@@ -2,7 +2,6 @@ import { Scene, Time } from 'phaser'
 
 import GameLeader from '@repo/core/src/game-leader'
 import RandomBag from '@repo/core/src/random-bag'
-import CardPanel from '../game-objects/card-panel'
 import BingoCard from '@repo/core/src/bingo-card'
 import PlayerRecord from '@repo/core/src/player-record'
 import { GAME_KEYS, MAX_WOLF_CRIES } from '../common'
@@ -11,14 +10,15 @@ import MessagePanel from '../game-objects/message-panel'
 import NumCardsSelector from '../game-objects/num-cards-selector'
 import SceneInfo from '../scene-info'
 import StatusPanel from '../game-objects/status-panel'
+import CardHolder from '../game-objects/card-holder'
 
 class SoloBingo extends Scene {
   #sceneInfo: SceneInfo
   statusPanel: StatusPanel
   gameLeader: GameLeader
-  cardPanels: CardPanel[]
   messagePanel: MessagePanel
   startNewGameButton: StartGameButton
+  cardHolder: CardHolder
   updateGameEvent: Time.TimerEvent
   player: PlayerRecord
   numCardsSelector: NumCardsSelector
@@ -66,7 +66,7 @@ class SoloBingo extends Scene {
   async startNewGame() {
     this.player.wolfCries = 0
     this.statusPanel.clear()
-    this.setupCardPanels()
+    this.cardHolder = new CardHolder(this, this.#sceneInfo.width, this.player.numCards, this.gameLeader)
     await this.messagePanel.setAndClear('Starting Game!')
     this.time.addEvent(this.updateGameEvent)
     this.updateGameEvent.paused = false
@@ -87,9 +87,7 @@ class SoloBingo extends Scene {
     await this.messagePanel.setAndClear(messages.at(0)!)
     await this.messagePanel.setAndClear(messages.at(1)!)
     this.statusPanel.resetDisplay()
-    this.cardPanels.forEach((cardPanel) => {
-      cardPanel.destroy()
-    })
+    this.cardHolder.destroy()
     this.gameLeader.reset()
     this.startNewGameButton.enable()
   }
@@ -108,16 +106,6 @@ class SoloBingo extends Scene {
         await this.messagePanel.setAndClear(`${wolfCriesLeft} more Wolf cries and you're out.`)
         this.updateGameEvent.paused = false
       }
-    }
-  }
-
-  setupCardPanels(): void {
-    this.cardPanels = []
-    const deltaX = Math.floor(this.#sceneInfo.width / (this.player.numCards + 1))
-    for (let i = 0; i < this.player.numCards; i++) {
-      const card = new BingoCard()
-      this.gameLeader.signCard(card)
-      this.cardPanels.push(new CardPanel(this, (i + 1) * deltaX, 400, card))
     }
   }
 }
