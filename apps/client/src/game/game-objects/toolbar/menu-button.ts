@@ -12,8 +12,7 @@ class MenuButton extends ToggleButton {
 
   onClick(): void {
     console.log('Step 1')
-    this.scene.scene.pause(GAME_KEYS.SOLOBINGO)
-    this.scene.scene.start(GAME_KEYS.GAMEMENU)
+    this.scene.scene.switch(GAME_KEYS.GAMEMENU)
   }
 }
 

@@ -8,8 +8,7 @@ class QuitGameMenuButton extends MenuOptionButton {
   }
 
   onClick(): void {
-    this.scene.scene.stop(GAME_KEYS.GAMEMENU)
-    this.scene.scene.resume(GAME_KEYS.SOLOBINGO)
+    this.scene.scene.switch(GAME_KEYS.SOLOBINGO)
   }
 }
 
