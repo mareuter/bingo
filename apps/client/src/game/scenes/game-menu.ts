@@ -45,16 +45,16 @@ class GameMenu extends Scene {
   }
 
   setNumCardsSelector(isClick: boolean = false): void {
-    let numCardButton: MenuOptionButton
+    let numCardsButton: MenuOptionButton
     const numCards = this.registry.get('numCards')
     if (numCards === 1) {
-      numCardButton = this.oneCardButton
+      numCardsButton = this.oneCardButton
     } else if (numCards === 2) {
-      numCardButton = this.twoCardsButton
+      numCardsButton = this.twoCardsButton
     } else {
-      numCardButton = this.threeCardsButton
+      numCardsButton = this.threeCardsButton
     }
-    const leftSide = numCardButton.getLeftCenter()
+    const leftSide = numCardsButton.getLeftCenter()
     if (isClick) {
       this.numCardsSelector.destroy()
     }
