@@ -4,6 +4,7 @@ import BootLoader from './scenes/bootloader'
 import SoloBingo from './scenes/solo-bingo'
 import MainMenu from './scenes/main-menu'
 import Splash from './scenes/splash'
+import GameMenu from './scenes/game-menu'
 
 const config: Types.Core.GameConfig = {
   type: AUTO,
@@ -16,7 +17,8 @@ const config: Types.Core.GameConfig = {
     createContainer: true,
   },
   // scene: [BootLoader, Splash, MainMenu, SoloBingo],
-  scene: [BootLoader, SoloBingo],
+  // scene: [BootLoader, SoloBingo],
+  scene: [BootLoader, SoloBingo, GameMenu],
 }
 
 const StartGame = (parent: string) => {

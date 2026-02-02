@@ -30,9 +30,10 @@ class SoloBingo extends Scene {
   }
 
   init() {
+    this.registry.set('numCards', 1)
     this.gameLeader = new GameLeader(new RandomBag())
     this.player = {
-      numCards: 1,
+      numCards: this.registry.get('numCards'),
       wolfCries: 0,
     }
   }
@@ -67,6 +68,7 @@ class SoloBingo extends Scene {
   }
 
   async startNewGame() {
+    this.player.numCards = this.registry.get('numCards')
     this.player.wolfCries = 0
     this.statusPanel.clear()
     this.cardHolder = new CardHolder(this, this.#sceneInfo.width, this.player.numCards, this.gameLeader)

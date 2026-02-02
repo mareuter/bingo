@@ -8,14 +8,17 @@ export const TOOLBAR_BUTTON_HOVER_TINT = 0x777777
 export const TOOLBAR_BUTTON_DISABLE_ALPHA = 0.6
 export const TOOLBAR_BUTTON_DISABLE_TINT = 0xffffff
 
+export const MENUOPTION_BUTTON_HOVER_TINT = 0xaaaaaa
+
 export function hexNumToString(hex: number): string {
   return `#${hex.toString(16)}`
 }
 
 export const GAME_KEYS = {
   BOOTLOADER: 'BootLoader',
-  SPLASH: 'Splash',
-  // MAINMENU: 'MainMenu',
-  MAINMENU: 'SoloBingo',
+  // SPLASH: 'Splash',
+  SPLASH: 'SoloBingo',
+  MAINMENU: 'MainMenu',
   SOLOBINGO: 'SoloBingo',
+  GAMEMENU: 'GameMenu',
 }

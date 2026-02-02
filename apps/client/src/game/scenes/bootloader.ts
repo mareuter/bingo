@@ -55,7 +55,7 @@ class BootLoader extends Scene {
     this.load.on(
       'complete',
       () => {
-        this.scene.start(GAME_KEYS.MAINMENU)
+        this.scene.start(GAME_KEYS.SPLASH)
       },
       this,
     )
@@ -72,6 +72,13 @@ class BootLoader extends Scene {
     this.load.image('bingo-ball', 'assets/images/bingo-ball.png')
     this.load.image('game-menu-button', 'assets/images/menu.png')
     this.load.image('start-button', 'assets/images/start.png')
+    this.load.image('game-type-menuoption', 'assets/images/game-type-menuoption.png')
+    this.load.image('number-of-cards-menuoption', 'assets/images/number-of-cards-menuoption.png')
+    this.load.image('one-card-menuitem', 'assets/images/one-card-menuitem.png')
+    this.load.image('two-card-menuitem', 'assets/images/two-card-menuitem.png')
+    this.load.image('three-card-menuitem', 'assets/images/three-card-menuitem.png')
+    this.load.image('asterisk-marker', 'assets/images/asterisk-marker.png')
+    this.load.image('quit-menu-menuoption', 'assets/images/quit-menu-menuoption.png')
   }
 }
 
