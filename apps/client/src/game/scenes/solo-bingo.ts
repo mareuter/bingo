@@ -38,9 +38,9 @@ class SoloBingo extends Scene {
     this.#sceneInfo = new SceneInfo(this)
     this.add.image(this.#sceneInfo.centerWidth, this.#sceneInfo.centerHeight, 'background')
 
-    this.toolbar = new Toolbar(this, 70, 25)
-    this.messagePanel = new MessagePanel(this, this.#sceneInfo.centerWidth, 25)
-    this.statusPanel = new StatusPanel(this, this.#sceneInfo.centerWidth, 170)
+    this.toolbar = new Toolbar(this, this.#sceneInfo.centerWidth, 35)
+    this.statusPanel = new StatusPanel(this, this.#sceneInfo.centerWidth, 190)
+    this.messagePanel = new MessagePanel(this, this.#sceneInfo.centerWidth, 335)
 
     this.events.on('startNewGame', this.startNewGame, this)
     this.events.on('haveWinningCard', this.handleWinningCard, this)
