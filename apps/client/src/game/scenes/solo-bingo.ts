@@ -5,9 +5,7 @@ import RandomBag from '@repo/core/src/random-bag'
 import BingoCard from '@repo/core/src/bingo-card'
 import PlayerRecord from '@repo/core/src/player-record'
 import { GAME_KEYS, MAX_WOLF_CRIES } from '../common'
-import StartGameButton from '../game-objects/start-new-game-button'
 import MessagePanel from '../game-objects/message-panel'
-import NumCardsSelector from '../game-objects/num-cards-selector'
 import SceneInfo from '../scene-info'
 import StatusPanel from '../game-objects/status-panel'
 import CardHolder from '../game-objects/card-holder'
@@ -19,11 +17,9 @@ class SoloBingo extends Scene {
   gameLeader: GameLeader
   toolbar: Toolbar
   messagePanel: MessagePanel
-  startNewGameButton: StartGameButton
   cardHolder: CardHolder
   updateGameEvent: Time.TimerEvent
   player: PlayerRecord
-  numCardsSelector: NumCardsSelector
 
   constructor() {
     super(GAME_KEYS.SOLOBINGO)
@@ -46,17 +42,7 @@ class SoloBingo extends Scene {
     this.messagePanel = new MessagePanel(this, this.#sceneInfo.centerWidth, 25)
     this.statusPanel = new StatusPanel(this, this.#sceneInfo.centerWidth, 170)
 
-    this.startNewGameButton = new StartGameButton(this, 355, 320)
     this.events.on('startNewGame', this.startNewGame, this)
-    this.numCardsSelector = new NumCardsSelector(this, 545, 308)
-    this.events.on(
-      'numCardsSelected',
-      (num: number) => {
-        this.player.numCards = num
-      },
-      this,
-    )
-
     this.events.on('haveWinningCard', this.handleWinningCard, this)
 
     this.updateGameEvent = new Time.TimerEvent({
@@ -95,7 +81,6 @@ class SoloBingo extends Scene {
     this.cardHolder.destroy()
     this.gameLeader.reset()
     this.events.emit('endGame')
-    this.startNewGameButton.enable()
   }
 
   async handleWinningCard(card: BingoCard) {

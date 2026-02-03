@@ -15,7 +15,6 @@ class BootLoader extends Scene {
     this.createBars()
     this.createEvents()
     this.loadImages()
-    this.load.html('numCardsSelector', 'assets/text/num-cards-selector.html')
     this.load.font('Roboto Regular', 'assets/fonts/Roboto-Regular.ttf')
     this.load.font('Ewert Regular', 'assets/fonts/Ewert-Regular.ttf')
 
