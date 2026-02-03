@@ -1,4 +1,4 @@
-import { Scene, Time } from 'phaser'
+import { GameObjects, Scene, Time } from 'phaser'
 
 import GameLeader from '@repo/core/src/game-leader'
 import RandomBag from '@repo/core/src/random-bag'
@@ -10,6 +10,7 @@ import SceneInfo from '../scene-info'
 import StatusPanel from '../game-objects/status-panel'
 import CardHolder from '../game-objects/card-holder'
 import Toolbar from '../game-objects/toolbar'
+import { GAME_TYPE_FONT } from '../font-configs'
 
 class SoloBingo extends Scene {
   #sceneInfo: SceneInfo
@@ -20,6 +21,7 @@ class SoloBingo extends Scene {
   cardHolder: CardHolder
   updateGameEvent: Time.TimerEvent
   player: PlayerRecord
+  gameType: GameObjects.Text
 
   constructor() {
     super(GAME_KEYS.SOLOBINGO)
@@ -42,6 +44,9 @@ class SoloBingo extends Scene {
     this.toolbar = new Toolbar(this, this.#sceneInfo.centerWidth, 35)
     this.statusPanel = new StatusPanel(this, this.#sceneInfo.centerWidth, 190)
     this.messagePanel = new MessagePanel(this, this.#sceneInfo.centerWidth, 335)
+    this.gameType = this.add
+      .text(this.#sceneInfo.centerWidth, 750, this.registry.get('gameType'), GAME_TYPE_FONT.toPhaserFontConfig())
+      .setOrigin(0.5)
 
     this.events.on('startNewGame', this.startNewGame, this)
     this.events.on('haveWinningCard', this.handleWinningCard, this)
@@ -57,6 +62,7 @@ class SoloBingo extends Scene {
   async startNewGame() {
     this.player.numCards = this.registry.get('numCards')
     this.player.wolfCries = 0
+    this.gameType = this.registry.get('gameType')
     this.statusPanel.clear()
     this.cardHolder = new CardHolder(this, this.#sceneInfo.width, this.player.numCards, this.gameLeader)
     await this.messagePanel.setAndClear('Starting Game!')
