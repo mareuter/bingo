@@ -2,7 +2,7 @@ import FontHelper from '@repo/core/src/font-helper'
 
 const statusPanelFont = 'Roboto Regular'
 
-export const MESSANGE_PANEL_FONT = new FontHelper('Roboto Regular', 30, '#ffffff', '#ffffff', 2, 'center', 2)
+export const MESSAGE_PANEL_FONT = new FontHelper('Roboto Regular', 30, '#ffffff', '#ffffff', 2, 'center', 2)
 
 export const BALL_COLUMN_FONT = new FontHelper(statusPanelFont, 30, '#3e3e3d3d', '#000000', 2, 'center', 5)
 

@@ -1,5 +1,5 @@
 import { GameObjects, Scene } from 'phaser'
-import { MESSANGE_PANEL_FONT } from '../font-configs'
+import { MESSAGE_PANEL_FONT } from '../font-configs'
 
 const sleep = (delay: number) => new Promise((resolve) => setTimeout(resolve, delay))
 
@@ -7,7 +7,7 @@ class MessagePanel {
   text: GameObjects.Text
 
   constructor(scene: Scene, x: number, y: number) {
-    this.text = scene.add.text(x, y, 'Welcome!', MESSANGE_PANEL_FONT.toPhaserFontConfig()).setOrigin(0.5)
+    this.text = scene.add.text(x, y, 'Welcome!', MESSAGE_PANEL_FONT.toPhaserFontConfig()).setOrigin(0.5)
   }
 
   clear() {

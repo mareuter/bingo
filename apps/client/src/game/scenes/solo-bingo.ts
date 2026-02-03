@@ -4,7 +4,7 @@ import GameLeader from '@repo/core/src/game-leader'
 import RandomBag from '@repo/core/src/random-bag'
 import BingoCard from '@repo/core/src/bingo-card'
 import PlayerRecord from '@repo/core/src/player-record'
-import { GAME_KEYS, MAX_WOLF_CRIES } from '../common'
+import { GAME_KEYS, GAME_TYPES, MAX_WOLF_CRIES } from '../common'
 import MessagePanel from '../game-objects/message-panel'
 import SceneInfo from '../scene-info'
 import StatusPanel from '../game-objects/status-panel'
@@ -27,6 +27,7 @@ class SoloBingo extends Scene {
 
   init() {
     this.registry.set('numCards', 1)
+    this.registry.set('gameType', GAME_TYPES.CLASSIC)
     this.gameLeader = new GameLeader(new RandomBag())
     this.player = {
       numCards: this.registry.get('numCards'),

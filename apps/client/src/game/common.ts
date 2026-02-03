@@ -18,3 +18,7 @@ export const GAME_KEYS = {
   SOLOBINGO: 'SoloBingo',
   GAMEMENU: 'GameMenu',
 }
+
+export const GAME_TYPES = {
+  CLASSIC: 'Classic',
+}
