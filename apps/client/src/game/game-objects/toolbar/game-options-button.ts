@@ -2,9 +2,9 @@ import { Scene } from 'phaser'
 import ToggleButton from '../../toggle-button'
 import { GAME_KEYS } from '../../common'
 
-class MenuButton extends ToggleButton {
-  constructor(scene: Scene, x: number, y: number, imageName: string) {
-    super(scene, x, y, imageName)
+class GameOptionsButton extends ToggleButton {
+  constructor(scene: Scene, x: number, y: number) {
+    super(scene, x, y, 'game-options-button')
 
     this.scene.events.on('startNewGame', () => this.disable())
     this.scene.events.on('endGame', () => this.enable())
@@ -16,4 +16,4 @@ class MenuButton extends ToggleButton {
   }
 }
 
-export default MenuButton
+export default GameOptionsButton

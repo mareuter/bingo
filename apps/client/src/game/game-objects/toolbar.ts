@@ -1,15 +1,15 @@
 import { Scene } from 'phaser'
-import StartButton from './toolbar/start-button'
-import MenuButton from './toolbar/menu-button'
+import StartGameButton from './toolbar/start-game-button'
+import GameOptionsButton from './toolbar/game-options-button'
 
 class Toolbar {
-  startButton: StartButton
-  menuButton: MenuButton
+  startGameButton: StartGameButton
+  gameOptionsButton: GameOptionsButton
 
   constructor(scene: Scene, x: number, y: number) {
     const offsetX = 30
-    this.startButton = new StartButton(scene, x - offsetX, y, 'start-button')
-    this.menuButton = new MenuButton(scene, x + offsetX, y, 'game-menu-button')
+    this.startGameButton = new StartGameButton(scene, x - offsetX, y)
+    this.gameOptionsButton = new GameOptionsButton(scene, x + offsetX, y)
   }
 }
 
