@@ -3,8 +3,8 @@ import MenuOptionButton from '../../menu-option-button'
 import { GAME_KEYS } from '../../common'
 
 class QuitGameMenuButton extends MenuOptionButton {
-  constructor(scene: Scene, x: number, y: number, imageName: string) {
-    super(scene, x, y, imageName)
+  constructor(scene: Scene, x: number, y: number) {
+    super(scene, x, y, 'quit-menu-menuoption')
   }
 
   onClick(): void {

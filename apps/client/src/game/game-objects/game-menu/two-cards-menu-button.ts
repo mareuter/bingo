@@ -2,8 +2,8 @@ import { Scene } from 'phaser'
 import MenuOptionButton from '../../menu-option-button'
 
 class TwoCardsMenuButton extends MenuOptionButton {
-  constructor(scene: Scene, x: number, y: number, imageName: string) {
-    super(scene, x, y, imageName)
+  constructor(scene: Scene, x: number, y: number) {
+    super(scene, x, y, 'two-card-menuitem')
   }
 
   onClick(): void {

@@ -29,9 +29,9 @@ class GameMenu extends Scene {
     this.numCardsSubMenu = this.add.image(sceneInfo.centerWidth, 400, 'number-of-cards-menuoption')
     const offsetX = 200
     const y2 = 475
-    this.oneCardButton = new OneCardMenuButton(this, sceneInfo.centerWidth - offsetX, y2, 'one-card-menuitem')
-    this.twoCardsButton = new TwoCardsMenuButton(this, sceneInfo.centerWidth, y2, 'two-card-menuitem')
-    this.threeCardsButton = new ThreeCardsMenuButton(this, sceneInfo.centerWidth + offsetX, y2, 'three-card-menuitem')
+    this.oneCardButton = new OneCardMenuButton(this, sceneInfo.centerWidth - offsetX, y2)
+    this.twoCardsButton = new TwoCardsMenuButton(this, sceneInfo.centerWidth, y2)
+    this.threeCardsButton = new ThreeCardsMenuButton(this, sceneInfo.centerWidth + offsetX, y2)
     this.setNumCardsSelector()
     this.registry.events.on(
       'changedata',
@@ -41,7 +41,7 @@ class GameMenu extends Scene {
       this,
     )
 
-    this.quitMenuButton = new QuitGameMenuButton(this, sceneInfo.centerWidth, 650, 'quit-menu-menuoption')
+    this.quitMenuButton = new QuitGameMenuButton(this, sceneInfo.centerWidth, 650)
   }
 
   setNumCardsSelector(isClick: boolean = false): void {
