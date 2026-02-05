@@ -17,6 +17,7 @@ class BootLoader extends Scene {
     this.loadImages()
     this.load.font('Roboto Regular', 'assets/fonts/Roboto-Regular.ttf')
     this.load.font('Ewert Regular', 'assets/fonts/Ewert-Regular.ttf')
+    this.load.audio('tone', 'assets/sounds/tone.mp3')
 
     console.log('Done bootloader')
   }
@@ -71,6 +72,8 @@ class BootLoader extends Scene {
     this.load.image('bingo-ball', 'assets/images/bingo-ball.png')
     this.load.image('game-options-button', 'assets/images/game-options.png')
     this.load.image('start-game-button', 'assets/images/start-game.png')
+    this.load.image('tone', 'assets/images/tone.png')
+    this.load.image('no-tone', 'assets/images/no-tone.png')
     this.load.image('game-type-menuoption', 'assets/images/game-type-menuoption.png')
     this.load.image('number-of-cards-menuoption', 'assets/images/number-of-cards-menuoption.png')
     this.load.image('one-card-menuitem', 'assets/images/one-card-menuitem.png')

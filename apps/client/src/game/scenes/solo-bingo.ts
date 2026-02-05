@@ -1,4 +1,4 @@
-import { GameObjects, Scene, Time } from 'phaser'
+import { GameObjects, Scene, Sound, Time } from 'phaser'
 
 import GameLeader from '@repo/core/src/game-leader'
 import RandomBag from '@repo/core/src/random-bag'
@@ -22,6 +22,7 @@ class SoloBingo extends Scene {
   updateGameEvent: Time.TimerEvent
   player: PlayerRecord
   gameType: GameObjects.Text
+  announceTone: Sound.NoAudioSound | Sound.HTML5AudioSound | Sound.WebAudioSound
 
   constructor() {
     super(GAME_KEYS.SOLOBINGO)
@@ -29,6 +30,7 @@ class SoloBingo extends Scene {
 
   init() {
     this.registry.set('numCards', 1)
+    this.registry.set('playSound', true)
     this.registry.set('gameType', GAME_TYPES.CLASSIC)
     this.gameLeader = new GameLeader(new RandomBag())
     this.player = {
@@ -40,6 +42,7 @@ class SoloBingo extends Scene {
   create() {
     this.#sceneInfo = new SceneInfo(this)
     this.add.image(this.#sceneInfo.centerWidth, this.#sceneInfo.centerHeight, 'background')
+    this.announceTone = this.sound.add('tone')
 
     this.toolbar = new Toolbar(this, this.#sceneInfo.centerWidth, 35)
     this.statusPanel = new StatusPanel(this, this.#sceneInfo.centerWidth, 190)
@@ -72,6 +75,9 @@ class SoloBingo extends Scene {
 
   async announceBall() {
     const bb = this.gameLeader.announceBall()
+    if (this.registry.get('playSound')) {
+      this.announceTone.play()
+    }
     this.statusPanel.updateStatus(bb)
     if (this.gameLeader.isGameOver()) {
       this.updateGameEvent.paused = true
