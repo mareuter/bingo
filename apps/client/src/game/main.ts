@@ -18,7 +18,7 @@ const config: Types.Core.GameConfig = {
   },
   // scene: [BootLoader, Splash, MainMenu, SoloBingo],
   // scene: [BootLoader, SoloBingo],
-  scene: [BootLoader, SoloBingo, GameMenu],
+  scene: [BootLoader, GameMenu],
 }
 
 const StartGame = (parent: string) => {

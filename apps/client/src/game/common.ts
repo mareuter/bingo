@@ -13,12 +13,9 @@ export const MENUOPTION_BUTTON_HOVER_TINT = 0xaaaaaa
 export const GAME_KEYS = {
   BOOTLOADER: 'BootLoader',
   // SPLASH: 'Splash',
-  SPLASH: 'SoloBingo',
+  // SPLASH: 'SoloBingo',
+  SPLASH: 'GameMenu',
   MAINMENU: 'MainMenu',
   SOLOBINGO: 'SoloBingo',
   GAMEMENU: 'GameMenu',
-}
-
-export const GAME_TYPES = {
-  CLASSIC: 'Classic',
 }

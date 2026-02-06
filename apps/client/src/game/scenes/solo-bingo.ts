@@ -4,13 +4,14 @@ import GameLeader from '@repo/core/src/game-leader'
 import RandomBag from '@repo/core/src/random-bag'
 import BingoCard from '@repo/core/src/bingo-card'
 import PlayerRecord from '@repo/core/src/player-record'
-import { GAME_KEYS, GAME_TYPES, MAX_WOLF_CRIES } from '../common'
+import { GAME_KEYS, MAX_WOLF_CRIES } from '../common'
 import MessagePanel from '../game-objects/message-panel'
 import SceneInfo from '../scene-info'
 import StatusPanel from '../game-objects/status-panel'
 import CardHolder from '../game-objects/card-holder'
 import Toolbar from '../game-objects/toolbar'
 import { GAME_TYPE_FONT } from '../font-configs'
+import { GAMETYPES } from '@repo/core/src/game-types'
 
 class SoloBingo extends Scene {
   #sceneInfo: SceneInfo
@@ -31,7 +32,7 @@ class SoloBingo extends Scene {
   init() {
     this.registry.set('numCards', 1)
     this.registry.set('playSound', true)
-    this.registry.set('gameType', GAME_TYPES.CLASSIC)
+    this.registry.set('gameType', GAMETYPES.CLASSIC)
     this.gameLeader = new GameLeader(new RandomBag())
     this.player = {
       numCards: this.registry.get('numCards'),
@@ -98,7 +99,7 @@ class SoloBingo extends Scene {
 
   async handleWinningCard(card: BingoCard) {
     this.updateGameEvent.paused = true
-    if (this.gameLeader.verify(card)) {
+    if (this.gameLeader.verify(card, this.registry.get('gameType'))) {
       await this.endGameAndReset(['Player Won!!!', 'Game Over!'])
     } else {
       await this.messagePanel.setAndClear('Player cried Wolf!!')
