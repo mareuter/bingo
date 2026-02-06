@@ -4,6 +4,7 @@ import GameLeader from '../src/game-leader'
 import BingoBall from '../src/bingo-ball'
 import BingoCard from '../src/bingo-card'
 import RandomBag from '../src/random-bag'
+import { GAMETYPES } from '../src/game-types'
 
 import type BagOfBalls from '../src/bag-of-balls'
 import RowBag from './test-bags/row-bag'
@@ -13,6 +14,11 @@ import OtherDiagonalBag from './test-bags/other-diagonal-bag'
 import TwoBingoBag from './test-bags/two-bingo-bag.'
 import NoBingoBag from './test-bags/no-bingo-bag'
 import ShortBag from './test-bags/short-bag'
+import BlackoutBag from './test-bags/blackout-bag'
+import XMarksBag from './test-bags/x-marks-bag'
+import Crazy8Bag from './test-bags/crazy8-bag'
+import FiveSpotBag from './test-bags/five-spot-bag'
+import HappyHBag from './test-bags/happyh-bag'
 
 const runGame = (bagOfBalls: BagOfBalls): GameLeader => {
   const gl = new GameLeader(bagOfBalls)
@@ -72,37 +78,67 @@ describe('Card winner verification tests', () => {
   test('Verify row bingo', () => {
     const gl = runGame(new RowBag())
     expect(gl.numAnnouncedBalls()).toBe(12)
-    expect(gl.verify(card)).toBeTruthy()
+    expect(gl.verify(card, GAMETYPES.CLASSIC)).toBeTruthy()
   })
 
   test('Verify column bingo', () => {
     const gl = runGame(new ColumnBag())
     expect(gl.numAnnouncedBalls()).toBe(12)
-    expect(gl.verify(card)).toBeTruthy()
+    expect(gl.verify(card, GAMETYPES.CLASSIC)).toBeTruthy()
   })
 
   test('Verify diagonal (ul -> lr) bingo', () => {
     const gl = runGame(new DiagonalBag())
     expect(gl.numAnnouncedBalls()).toBe(14)
-    expect(gl.verify(card)).toBeTruthy()
+    expect(gl.verify(card, GAMETYPES.CLASSIC)).toBeTruthy()
   })
 
   test('Verify other diagonal (ll -> ur) bingo', () => {
     const gl = runGame(new OtherDiagonalBag())
     expect(gl.numAnnouncedBalls()).toBe(14)
-    expect(gl.verify(card)).toBeTruthy()
+    expect(gl.verify(card, GAMETYPES.CLASSIC)).toBeTruthy()
   })
 
   test('Verify bingo when two present', () => {
     const gl = runGame(new TwoBingoBag())
     expect(gl.numAnnouncedBalls()).toBe(14)
-    expect(gl.verify(card)).toBeTruthy()
+    expect(gl.verify(card, GAMETYPES.CLASSIC)).toBeTruthy()
   })
 
   test('Verify no bingo (wolf crier!)', () => {
     const gl = runGame(new NoBingoBag())
     expect(gl.numAnnouncedBalls()).toBe(14)
-    expect(gl.verify(card)).toBeFalsy()
+    expect(gl.verify(card, GAMETYPES.CLASSIC)).toBeFalsy()
+  })
+
+  test('Verify blackout bingo', () => {
+    const gl = runGame(new BlackoutBag())
+    expect(gl.numAnnouncedBalls()).toBe(29)
+    expect(gl.verify(card, GAMETYPES.BLACKOUT)).toBeTruthy()
+  })
+
+  test('Verify X marks bingo', () => {
+    const gl = runGame(new XMarksBag())
+    expect(gl.numAnnouncedBalls()).toBe(19)
+    expect(gl.verify(card, GAMETYPES.XMARKS)).toBeTruthy()
+  })
+
+  test('Verify crazy 8 bingo', () => {
+    const gl = runGame(new Crazy8Bag())
+    expect(gl.numAnnouncedBalls()).toBe(29)
+    expect(gl.verify(card, GAMETYPES.CRAZY8)).toBeTruthy()
+  })
+
+  test('Verify five spot bingo', () => {
+    const gl = runGame(new FiveSpotBag())
+    expect(gl.numAnnouncedBalls()).toBe(19)
+    expect(gl.verify(card, GAMETYPES.FIVESPOT)).toBeTruthy()
+  })
+
+  test('Verify happy H bingo', () => {
+    const gl = runGame(new HappyHBag())
+    expect(gl.numAnnouncedBalls()).toBe(29)
+    expect(gl.verify(card, GAMETYPES.HAPPYH)).toBeTruthy()
   })
 })
 
