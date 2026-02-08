@@ -32,7 +32,6 @@
   },
   "lint-staged": {
     "**/*.{ts,tsx,js,jsx}": [
-      "pnpm dlx eslint --fix",
       "pnpm dlx prettier --write"
     ]
   }

@@ -7,17 +7,29 @@ import TwoCardsMenuButton from '../game-objects/game-menu/two-cards-menu-button'
 import ThreeCardsMenuButton from '../game-objects/game-menu/three-cards-menu-button'
 import type MenuOptionButton from '../menu-option-button'
 import ClassicMenuButton from '../game-objects/game-menu/classic-menu-button'
+import BlackoutMenuButton from '../game-objects/game-menu/blackout-menu-button'
+import Crazy8MenuButton from '../game-objects/game-menu/crazy-8-menu-button'
+import FiveSpotMenuButton from '../game-objects/game-menu/five-spot-menu-button'
+import HappyHMenuButton from '../game-objects/game-menu/happy-h-menu-button'
+import XMarksMenuButton from '../game-objects/game-menu/x-marks-menu-button'
+import { GAMETYPES } from '@repo/core/src/game-types'
 
 class GameMenu extends Scene {
   gameTypeSubMenu: GameObjects.Image
   gameTypeSelector: GameObjects.Image
   classicButton: ClassicMenuButton
+  blackoutButton: BlackoutMenuButton
+  crazy8Button: Crazy8MenuButton
+  fiveSpotButton: FiveSpotMenuButton
+  happyHButton: HappyHMenuButton
+  xmarksButton: XMarksMenuButton
   numCardsSubMenu: GameObjects.Image
   numCardsSelector: GameObjects.Image
   oneCardButton: OneCardMenuButton
   twoCardsButton: TwoCardsMenuButton
   threeCardsButton: ThreeCardsMenuButton
   quitMenuButton: QuitGameMenuButton
+  #selectorOffset = 20
 
   constructor() {
     super(GAME_KEYS.GAMEMENU)
@@ -30,8 +42,13 @@ class GameMenu extends Scene {
     this.gameTypeSubMenu = this.add.image(sceneInfo.centerWidth, 60, 'game-type-menuoption')
     const offsetX1 = 200
     const y1 = 140
-    // const rowOffset = 30
+    const rowOffset = 60
     this.classicButton = new ClassicMenuButton(this, sceneInfo.centerWidth - offsetX1, y1)
+    this.blackoutButton = new BlackoutMenuButton(this, sceneInfo.centerWidth + offsetX1, y1)
+    this.crazy8Button = new Crazy8MenuButton(this, sceneInfo.centerWidth - offsetX1, y1 + rowOffset)
+    this.fiveSpotButton = new FiveSpotMenuButton(this, sceneInfo.centerWidth + offsetX1, y1 + rowOffset)
+    this.happyHButton = new HappyHMenuButton(this, sceneInfo.centerWidth - offsetX1, y1 + 2 * rowOffset)
+    this.xmarksButton = new XMarksMenuButton(this, sceneInfo.centerWidth + offsetX1, y1 + 2 * rowOffset)
     this.setGameTypeSelector()
 
     this.numCardsSubMenu = this.add.image(sceneInfo.centerWidth, 400, 'number-of-cards-menuoption')
@@ -61,6 +78,21 @@ class GameMenu extends Scene {
     let gameTypeButton: MenuOptionButton
     const gameType = this.registry.get('gameType')
     switch (gameType) {
+      case GAMETYPES.BLACKOUT:
+        gameTypeButton = this.blackoutButton
+        break
+      case GAMETYPES.CRAZY8:
+        gameTypeButton = this.crazy8Button
+        break
+      case GAMETYPES.FIVESPOT:
+        gameTypeButton = this.fiveSpotButton
+        break
+      case GAMETYPES.HAPPYH:
+        gameTypeButton = this.happyHButton
+        break
+      case GAMETYPES.XMARKS:
+        gameTypeButton = this.xmarksButton
+        break
       default:
         gameTypeButton = this.classicButton
     }
@@ -68,7 +100,7 @@ class GameMenu extends Scene {
     if (isClick) {
       this.gameTypeSelector.destroy()
     }
-    this.gameTypeSelector = this.add.image(leftSide.x - 20, leftSide.y, 'asterisk-marker')
+    this.gameTypeSelector = this.add.image(leftSide.x - this.#selectorOffset, leftSide.y, 'asterisk-marker')
   }
 
   setNumCardsSelector(isClick: boolean = false): void {
@@ -85,7 +117,7 @@ class GameMenu extends Scene {
     if (isClick) {
       this.numCardsSelector.destroy()
     }
-    this.numCardsSelector = this.add.image(leftSide.x - 20, leftSide.y, 'asterisk-marker')
+    this.numCardsSelector = this.add.image(leftSide.x - this.#selectorOffset, leftSide.y, 'asterisk-marker')
   }
 }
 
