@@ -61,7 +61,7 @@ class StatusPanel {
   resetDisplay() {
     this.display.forEach((subArray) => {
       subArray.forEach((element) => {
-        element.setVisible(true)
+        element.setColor(BALL_RANGE_FONT.getUpColor())
       })
     })
   }
@@ -81,7 +81,7 @@ class StatusPanel {
 
       const rowIndex = COLUMNS.indexOf(bb.getLetter())
       const colIndex = bb.number - BingoBall.RANGE * rowIndex - 1
-      this.display[rowIndex]![colIndex]?.setVisible(false)
+      this.display[rowIndex]![colIndex]?.setColor(BALL_RANGE_FONT.getDownColor())
     }
   }
 }

@@ -1,4 +1,5 @@
 import FontHelper from '@repo/core/src/font-helper'
+import ToggleFont from '@repo/core/src/toggle-font'
 
 const statusPanelFont = 'Roboto Regular'
 
@@ -8,7 +9,7 @@ export const GAME_TYPE_FONT = new FontHelper('Roboto Regular', 20, '#ffffff', '#
 
 export const BALL_COLUMN_FONT = new FontHelper(statusPanelFont, 30, '#3e3e3d3d', '#000000', 2, 'center', 5)
 
-export const BALL_RANGE_FONT = new FontHelper(statusPanelFont, 30, '#edd45b', '#000000', 2, 'center', 5)
+export const BALL_RANGE_FONT = new ToggleFont(statusPanelFont, 30, '#d8a479', '#edd45b', '#000000', 2, 'center', 5)
 
 export const BALL_FONT = new FontHelper(statusPanelFont, 50, '#edd45b', '#000000', 2, 'center', 5)
 
