@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "build": "vite --config vite/config.prod.mjs",
     "dev": "vite --config vite/config.dev.mjs",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint --fix",
