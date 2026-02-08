@@ -1,6 +1,6 @@
 import { GameObjects, Scene } from 'phaser'
 import Button from '../../button'
-import { TOOLBAR_BUTTON_HOVER_TINT } from '../../common'
+import { REGISTRY_KEYS, TOOLBAR_BUTTON_HOVER_TINT } from '../../common'
 
 class ToneButton extends Button {
   protected downImage: GameObjects.Image
@@ -25,13 +25,13 @@ class ToneButton extends Button {
 
   onClick(): void {
     if (this.image.visible) {
-      this.scene.registry.set('playSound', false)
+      this.scene.registry.set(REGISTRY_KEYS.PLAYTONE, false)
       this.image.setVisible(false)
       this.image.disableInteractive()
       this.downImage.setVisible(true)
       this.downImage.setInteractive()
     } else if (this.downImage.visible) {
-      this.scene.registry.set('playSound', true)
+      this.scene.registry.set(REGISTRY_KEYS.PLAYTONE, true)
       this.downImage.setVisible(false)
       this.downImage.disableInteractive()
       this.image.setVisible(true)
