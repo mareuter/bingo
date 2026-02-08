@@ -11,7 +11,6 @@ class GameOptionsButton extends ToggleButton {
   }
 
   onClick(): void {
-    console.log('Step 1')
     this.scene.scene.switch(GAME_KEYS.GAMEMENU)
   }
 }

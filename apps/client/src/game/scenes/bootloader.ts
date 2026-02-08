@@ -10,16 +10,12 @@ class BootLoader extends Scene {
   }
 
   preload() {
-    console.log('In bootloader')
-    console.log(`${this.cameras.main.width}, ${this.cameras.main.height}`)
     this.createBars()
     this.createEvents()
     this.loadImages()
     this.load.font('Roboto Regular', 'assets/fonts/Roboto-Regular.ttf')
     this.load.font('Ewert Regular', 'assets/fonts/Ewert-Regular.ttf')
     this.load.audio('tone', 'assets/sounds/tone.mp3')
-
-    console.log('Done bootloader')
   }
 
   create() {}
@@ -40,7 +36,6 @@ class BootLoader extends Scene {
     this.load.on(
       'progress',
       (value: number) => {
-        console.log(`${value}`)
         this.progressBar.clear()
         this.progressBar.fillStyle(0x88d24c, 1)
         this.progressBar.fillRect(

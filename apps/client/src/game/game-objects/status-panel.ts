@@ -19,7 +19,6 @@ class StatusPanel {
     this.y = y
     this.panel = scene.add.image(this.x, this.y, 'status-board')
     const leftEdge = this.panel.getLeftCenter()
-    console.log(`A: ${leftEdge.x}, ${leftEdge.y}`)
 
     const deltaX = BALL_COLUMN_FONT.size + 2 * BALL_COLUMN_FONT.padding
     const deltaY = deltaX

@@ -1,5 +1,5 @@
 import { GameObjects, Scene } from 'phaser'
-import { GAME_KEYS } from '../common'
+import { GAME_KEYS, REGISTRY_KEYS } from '../common'
 import SceneInfo from '../scene-info'
 import QuitGameMenuButton from '../game-objects/game-menu/quit-game-menu-button'
 import OneCardMenuButton from '../game-objects/game-menu/one-card-menu-button'
@@ -30,6 +30,7 @@ class GameMenu extends Scene {
   threeCardsButton: ThreeCardsMenuButton
   quitMenuButton: QuitGameMenuButton
   #selectorOffset = 20
+  #selectorImage = 'asterisk-marker'
 
   constructor() {
     super(GAME_KEYS.GAMEMENU)
@@ -62,7 +63,7 @@ class GameMenu extends Scene {
     this.registry.events.on(
       'changedata',
       (_parent: object, key: string, _value: number) => {
-        if (key === 'numCards') {
+        if (key === REGISTRY_KEYS.NUMCARDS) {
           this.setNumCardsSelector(true)
         } else {
           this.setGameTypeSelector(true)
@@ -76,7 +77,7 @@ class GameMenu extends Scene {
 
   setGameTypeSelector(isClick: boolean = false): void {
     let gameTypeButton: MenuOptionButton
-    const gameType = this.registry.get('gameType')
+    const gameType = this.registry.get(REGISTRY_KEYS.GAMETYPE)
     switch (gameType) {
       case GAMETYPES.BLACKOUT:
         gameTypeButton = this.blackoutButton
@@ -100,12 +101,12 @@ class GameMenu extends Scene {
     if (isClick) {
       this.gameTypeSelector.destroy()
     }
-    this.gameTypeSelector = this.add.image(leftSide.x - this.#selectorOffset, leftSide.y, 'asterisk-marker')
+    this.gameTypeSelector = this.add.image(leftSide.x - this.#selectorOffset, leftSide.y, this.#selectorImage)
   }
 
   setNumCardsSelector(isClick: boolean = false): void {
     let numCardsButton: MenuOptionButton
-    const numCards = this.registry.get('numCards')
+    const numCards = this.registry.get(REGISTRY_KEYS.NUMCARDS)
     if (numCards === 1) {
       numCardsButton = this.oneCardButton
     } else if (numCards === 2) {
@@ -117,7 +118,7 @@ class GameMenu extends Scene {
     if (isClick) {
       this.numCardsSelector.destroy()
     }
-    this.numCardsSelector = this.add.image(leftSide.x - this.#selectorOffset, leftSide.y, 'asterisk-marker')
+    this.numCardsSelector = this.add.image(leftSide.x - this.#selectorOffset, leftSide.y, this.#selectorImage)
   }
 }
 

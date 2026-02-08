@@ -4,14 +4,15 @@ import GameLeader from '@repo/core/src/game-leader'
 import RandomBag from '@repo/core/src/random-bag'
 import BingoCard from '@repo/core/src/bingo-card'
 import PlayerRecord from '@repo/core/src/player-record'
-import { GAME_KEYS, MAX_WOLF_CRIES } from '../common'
+import { GAMETYPES } from '@repo/core/src/game-types'
+import { MAX_WOLF_CRIES } from '@repo/core/src/constants'
 import MessagePanel from '../game-objects/message-panel'
 import SceneInfo from '../scene-info'
 import StatusPanel from '../game-objects/status-panel'
 import CardHolder from '../game-objects/card-holder'
 import Toolbar from '../game-objects/toolbar'
 import { GAME_TYPE_FONT } from '../font-configs'
-import { GAMETYPES } from '@repo/core/src/game-types'
+import { GAME_KEYS, REGISTRY_KEYS } from '../common'
 
 class SoloBingo extends Scene {
   #sceneInfo: SceneInfo
@@ -30,12 +31,12 @@ class SoloBingo extends Scene {
   }
 
   init() {
-    this.registry.set('numCards', 1)
-    this.registry.set('playSound', true)
-    this.registry.set('gameType', GAMETYPES.CLASSIC)
+    this.registry.set(REGISTRY_KEYS.NUMCARDS, 1)
+    this.registry.set(REGISTRY_KEYS.PLAYTONE, true)
+    this.registry.set(REGISTRY_KEYS.GAMETYPE, GAMETYPES.CLASSIC)
     this.gameLeader = new GameLeader(new RandomBag())
     this.player = {
-      numCards: this.registry.get('numCards'),
+      numCards: this.registry.get(REGISTRY_KEYS.NUMCARDS),
       wolfCries: 0,
     }
   }
@@ -49,11 +50,26 @@ class SoloBingo extends Scene {
     this.statusPanel = new StatusPanel(this, this.#sceneInfo.centerWidth, 190)
     this.messagePanel = new MessagePanel(this, this.#sceneInfo.centerWidth, 335)
     this.gameType = this.add
-      .text(this.#sceneInfo.centerWidth, 750, this.registry.get('gameType'), GAME_TYPE_FONT.toPhaserFontConfig())
+      .text(
+        this.#sceneInfo.centerWidth,
+        750,
+        this.registry.get(REGISTRY_KEYS.GAMETYPE),
+        GAME_TYPE_FONT.toPhaserFontConfig(),
+      )
       .setOrigin(0.5)
 
     this.events.on('startNewGame', this.startNewGame, this)
     this.events.on('haveWinningCard', this.handleWinningCard, this)
+
+    this.registry.events.on(
+      'changedata',
+      (_parent: object, key: string, _value: number) => {
+        if (key === REGISTRY_KEYS.GAMETYPE) {
+          this.gameType.text = this.registry.get(REGISTRY_KEYS.GAMETYPE)
+        }
+      },
+      this,
+    )
 
     this.updateGameEvent = new Time.TimerEvent({
       delay: 3000,
@@ -64,9 +80,8 @@ class SoloBingo extends Scene {
   }
 
   async startNewGame() {
-    this.player.numCards = this.registry.get('numCards')
+    this.player.numCards = this.registry.get(REGISTRY_KEYS.NUMCARDS)
     this.player.wolfCries = 0
-    this.gameType = this.registry.get('gameType')
     this.statusPanel.clear()
     this.cardHolder = new CardHolder(this, this.#sceneInfo.width, this.player.numCards, this.gameLeader)
     await this.messagePanel.setAndClear('Starting Game!')
@@ -76,7 +91,7 @@ class SoloBingo extends Scene {
 
   async announceBall() {
     const bb = this.gameLeader.announceBall()
-    if (this.registry.get('playSound')) {
+    if (this.registry.get(REGISTRY_KEYS.PLAYTONE)) {
       this.announceTone.play()
     }
     this.statusPanel.updateStatus(bb)
@@ -99,7 +114,7 @@ class SoloBingo extends Scene {
 
   async handleWinningCard(card: BingoCard) {
     this.updateGameEvent.paused = true
-    if (this.gameLeader.verify(card, this.registry.get('gameType'))) {
+    if (this.gameLeader.verify(card, this.registry.get(REGISTRY_KEYS.GAMETYPE))) {
       await this.endGameAndReset(['Player Won!!!', 'Game Over!'])
     } else {
       await this.messagePanel.setAndClear('Player cried Wolf!!')

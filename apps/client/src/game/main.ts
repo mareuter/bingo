@@ -16,9 +16,9 @@ const config: Types.Core.GameConfig = {
   dom: {
     createContainer: true,
   },
-  // scene: [BootLoader, Splash, MainMenu, SoloBingo],
+  scene: [BootLoader, Splash, MainMenu, GameMenu, SoloBingo],
   // scene: [BootLoader, SoloBingo],
-  scene: [BootLoader, GameMenu],
+  // scene: [BootLoader, GameMenu],
 }
 
 const StartGame = (parent: string) => {
