@@ -3,17 +3,19 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "build": "vite --config vite/config.prod.mjs",
+    "build": "vite build --config vite/config.prod.mjs",
     "dev": "vite --config vite/config.dev.mjs",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint --fix",
     "format": "prettier --write .",
-    "check-format": "prettier --check ."
+    "check-format": "prettier --check .",
+    "tauri": "tauri"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@repo/vitest-config": "workspace:*",
+    "@tauri-apps/cli": "^2.10.0",
     "@types/node": "^22.19.3",
     "eslint": "^9.39.2",
     "typescript": "latest",
