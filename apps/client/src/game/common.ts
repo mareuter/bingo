@@ -12,6 +12,7 @@ export const GAME_KEYS = {
   SPLASH: 'Splash',
   MAINMENU: 'MainMenu',
   SOLOBINGO: 'SoloBingo',
+  CPUBINGO: 'CpuBingo',
   GAMEMENU: 'GameMenu',
 }
 

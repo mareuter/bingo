@@ -1,0 +1,37 @@
+{
+  "name": "@repo/server",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "loadtest": "tsx loadtest/example.ts --room my_room --numClients 2",
+    "build": "pnpm run clean && deno compile -A -o dist/bingo-server src/index.ts",
+    "clean": "rimraf build",
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint --fix",
+    "format": "prettier --write .",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@colyseus/loadtest": "^0.17.7",
+    "@colyseus/sdk": "^0.17.17",
+    "@colyseus/testing": "^0.17.10",
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@repo/vitest-config": "workspace:*",
+    "@types/express": "^4.17.1",
+    "@vitest/coverage-istanbul": "^4.0.16",
+    "deno": "^2.7.4",
+    "eslint": "^9.39.2",
+    "rimraf": "^5.0.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.0.4",
+    "vitest": "^4.0.16"
+  },
+  "dependencies": {
+    "@colyseus/schema": "^4.0.0",
+    "@colyseus/tools": "^0.17.0",
+    "colyseus": "^0.17.6",
+    "express": "^4.18.2"
+  }
+}
