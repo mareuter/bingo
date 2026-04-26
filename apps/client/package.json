@@ -24,5 +24,11 @@
   "dependencies": {
     "@repo/core": "workspace:*",
     "phaser": "^3.90.0"
+  },
+  "lint-staged": {
+    "**/*.{ts,tsx,js,jsx}": [
+      "pnpm lint:fix",
+      "pnpm format"
+    ]
   }
 }

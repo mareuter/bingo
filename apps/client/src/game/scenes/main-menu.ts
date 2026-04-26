@@ -39,6 +39,7 @@ class MainMenu extends Scene {
     this.multiplayerItem = this.add.image(this.#sceneInfo.centerWidth, deltaY * 4, 'multiplayer-menuitem')
 
     this._setActions(this.soloItem, 'SoloBingo')
+    this._setActions(this.vsCpuItem, 'CpuBingo')
   }
 
   startGame(key: string): void {

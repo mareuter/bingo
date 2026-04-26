@@ -1,6 +1,7 @@
 import BingoCard from './bingo-card'
 import PlayerRecord from './player-record'
 import type GameLeader from './game-leader'
+import type { GameTypes } from './game-types'
 
 class CpuPlayer implements PlayerRecord {
   numCards: number
@@ -10,6 +11,15 @@ class CpuPlayer implements PlayerRecord {
   constructor() {
     this.numCards = 1
     this.wolfCries = 0
+  }
+
+  checkCards(gl: GameLeader, gameType: GameTypes): boolean {
+    let outcome = false
+    this.bingoCards.forEach((card) => {
+      const check = gl.verify(card, gameType)
+      outcome ||= check
+    })
+    return outcome
   }
 
   generateCards(gl: GameLeader) {
