@@ -1,38 +1,30 @@
 import BingoCard from './bingo-card'
-import PlayerRecord from './player-record'
+import Player from './player'
 import type GameLeader from './game-leader'
 import type { GameTypes } from './game-types'
 
-class CpuPlayer implements PlayerRecord {
-  numCards: number
-  wolfCries: number
-  bingoCards: BingoCard[] = []
-
+class CpuPlayer extends Player {
   constructor() {
-    this.numCards = 1
-    this.wolfCries = 0
+    super('CPU')
   }
 
-  checkCards(gl: GameLeader, gameType: GameTypes): boolean {
-    let outcome = false
-    this.bingoCards.forEach((card) => {
-      const check = gl.verify(card, gameType)
-      outcome ||= check
-    })
-    return outcome
-  }
-
-  generateCards(gl: GameLeader) {
-    this.bingoCards.length = 0
-    for (let i = 0; i < this.numCards; i++) {
-      const c = new BingoCard()
-      gl.signCard(c)
-      this.bingoCards.push(c)
+  checkCards(gameLeader: GameLeader, gameType: GameTypes): BingoCard | undefined {
+    for (let i = 0; i < this.bingoCards.length; i++) {
+      const card = this.bingoCards.at(i)!
+      if (gameLeader.verify(card, gameType)) {
+        return card
+      }
     }
+    return
   }
 
   setNumCards() {
     this.numCards = Math.floor(Math.random() * 3) + 1
+  }
+
+  reset() {
+    this.setNumCards()
+    this.wolfCries = 0
   }
 }
 

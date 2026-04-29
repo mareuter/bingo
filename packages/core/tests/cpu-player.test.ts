@@ -1,14 +1,9 @@
 import { expect, test } from 'vitest'
-
 import CpuPlayer from '../src/cpu-player'
-import GameLeader from '../src/game-leader'
-import RandomBag from '../src/random-bag'
 
 test('Initialization', () => {
   const cpu = new CpuPlayer()
-  expect(cpu.numCards).toBe(1)
-  expect(cpu.wolfCries).toBe(0)
-  expect(cpu.bingoCards.length).toBe(0)
+  expect(cpu.name).toBe('CPU')
 })
 
 test('Number of cards setting', () => {
@@ -18,10 +13,11 @@ test('Number of cards setting', () => {
   expect(cpu.numCards).toBeLessThanOrEqual(3)
 })
 
-test('Has a card', () => {
+test('Reset', () => {
   const cpu = new CpuPlayer()
-  const gl = new GameLeader(new RandomBag())
-  cpu.generateCards(gl)
-  expect(cpu.bingoCards.length).toBe(1)
-  expect(cpu.bingoCards.at(0)?.getSignature()).toBeDefined()
+  cpu.wolfCries++
+  cpu.wolfCries++
+  expect(cpu.wolfCries).toBe(2)
+  cpu.reset()
+  expect(cpu.wolfCries).toBe(0)
 })

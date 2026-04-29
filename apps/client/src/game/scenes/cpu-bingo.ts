@@ -3,17 +3,19 @@ import { GameObjects, Scene, Sound, Time } from 'phaser'
 import GameLeader from '@repo/core/src/game-leader'
 import RandomBag from '@repo/core/src/random-bag'
 import BingoCard from '@repo/core/src/bingo-card'
-import PlayerRecord from '@repo/core/src/player-record'
+import HumanPlayer from '@repo/core/src/human-player'
 import CpuPlayer from '@repo/core/src/cpu-player'
 import { GAMETYPES } from '@repo/core/src/game-types'
 import { MAX_WOLF_CRIES } from '@repo/core/src/constants'
 import MessagePanel from '../game-objects/message-panel'
 import SceneInfo from '../scene-info'
 import StatusPanel from '../game-objects/status-panel'
-import CardHolder from '../game-objects/card-holder'
+import NewCardHolder from '../game-objects/new-card-holder'
 import Toolbar from '../game-objects/toolbar'
 import { GAME_TYPE_FONT } from '../font-configs'
 import { GAME_KEYS, REGISTRY_KEYS } from '../common'
+import Player from '@repo/core/src/player'
+import CpuCardHolder from '../game-objects/cpu-card-holder'
 
 class CpuBingo extends Scene {
   #sceneInfo: SceneInfo
@@ -21,9 +23,10 @@ class CpuBingo extends Scene {
   gameLeader: GameLeader
   toolbar: Toolbar
   messagePanel: MessagePanel
-  cardHolder: CardHolder
+  cardHolder: NewCardHolder
+  cpuCardHolder: CpuCardHolder
   updateGameEvent: Time.TimerEvent
-  player: PlayerRecord
+  player: HumanPlayer
   cpuPlayer: CpuPlayer
   gameType: GameObjects.Text
   announceTone: Sound.NoAudioSound | Sound.HTML5AudioSound | Sound.WebAudioSound
@@ -37,10 +40,7 @@ class CpuBingo extends Scene {
     this.registry.set(REGISTRY_KEYS.PLAYTONE, true)
     this.registry.set(REGISTRY_KEYS.GAMETYPE, GAMETYPES.CLASSIC)
     this.gameLeader = new GameLeader(new RandomBag())
-    this.player = {
-      numCards: this.registry.get(REGISTRY_KEYS.NUMCARDS),
-      wolfCries: 0,
-    }
+    this.player = new HumanPlayer('Player')
     this.cpuPlayer = new CpuPlayer()
   }
 
@@ -62,7 +62,7 @@ class CpuBingo extends Scene {
       .setOrigin(0.5)
 
     this.events.on('startNewGame', this.startNewGame, this)
-    this.events.on('haveWinningCard', this.handleWinningCard, this)
+    this.events.on('haveWinningCard', this.haveWinningCard, this)
 
     this.registry.events.on(
       'changedata',
@@ -83,14 +83,15 @@ class CpuBingo extends Scene {
   }
 
   async startNewGame() {
-    this.cpuPlayer.setNumCards()
-    this.cpuPlayer.wolfCries = 0
+    this.cpuPlayer.reset()
     this.cpuPlayer.generateCards(this.gameLeader)
-    this.player.numCards = this.registry.get(REGISTRY_KEYS.NUMCARDS)
-    this.player.wolfCries = 0
+    this.player.reset(this.registry.get(REGISTRY_KEYS.NUMCARDS))
+    this.player.generateCards(this.gameLeader)
     this.statusPanel.clear()
-    this.cardHolder = new CardHolder(this, this.#sceneInfo.width, this.player.numCards, this.gameLeader)
+    this.cardHolder = new NewCardHolder(this, this.#sceneInfo.width, this.player)
+    this.cpuCardHolder = new CpuCardHolder(this, this.cpuPlayer)
     await this.messagePanel.setAndClear('Starting Game!')
+    await this.messagePanel.setAndClear(`CPU has ${this.cpuPlayer.numCards} cards.`)
     this.time.addEvent(this.updateGameEvent)
     this.updateGameEvent.paused = false
   }
@@ -101,6 +102,7 @@ class CpuBingo extends Scene {
       this.announceTone.play()
     }
     this.statusPanel.updateStatus(bb)
+    this.events.emit('announceBall', this.gameLeader, this.registry.get(REGISTRY_KEYS.GAMETYPE))
     if (this.gameLeader.isGameOver()) {
       this.updateGameEvent.paused = true
       await this.endGameAndReset(['Game Over!', 'Nobody Won!'])
@@ -114,21 +116,23 @@ class CpuBingo extends Scene {
     await this.messagePanel.setAndClear(messages.at(1)!)
     this.statusPanel.resetDisplay()
     this.cardHolder.destroy()
+    this.cpuCardHolder.destroy()
     this.gameLeader.reset()
     this.events.emit('endGame')
   }
 
-  async handleWinningCard(card: BingoCard) {
+  async haveWinningCard(player: Player, card: BingoCard) {
+    console.log(`Checking winning card for ${player.name}`)
     this.updateGameEvent.paused = true
     if (this.gameLeader.verify(card, this.registry.get(REGISTRY_KEYS.GAMETYPE))) {
-      await this.endGameAndReset(['Player Won!!!', 'Game Over!'])
+      await this.endGameAndReset([`${player.name} Won!!!`, 'Game Over!'])
     } else {
-      await this.messagePanel.setAndClear('Player cried Wolf!!')
-      this.player.wolfCries++
-      if (MAX_WOLF_CRIES === this.player.wolfCries) {
+      await this.messagePanel.setAndClear(`${player.name} cried Wolf!!`)
+      player.wolfCries++
+      if (MAX_WOLF_CRIES === player.wolfCries) {
         await this.endGameAndReset(['You have been kicked out!', 'Resetting game.'])
       } else {
-        const wolfCriesLeft = MAX_WOLF_CRIES - this.player.wolfCries
+        const wolfCriesLeft = MAX_WOLF_CRIES - player.wolfCries
         await this.messagePanel.setAndClear(`${wolfCriesLeft} more Wolf cries and you're out.`)
         this.updateGameEvent.paused = false
       }
