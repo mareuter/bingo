@@ -18,6 +18,10 @@ class BaseCardHolder {
       this.scene.events.emit('haveWinningCard', this.player, card)
     }
   }
+
+  destroy() {
+    this.scene.events.off('handleWinningCard')
+  }
 }
 
 export default BaseCardHolder

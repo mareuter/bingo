@@ -36,6 +36,7 @@ class NewCardHolder extends BaseCardHolder {
   }
 
   destroy() {
+    super.destroy()
     this.cardPanels.forEach((cardPanel) => {
       cardPanel.destroy()
     })

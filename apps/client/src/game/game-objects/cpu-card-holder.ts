@@ -18,6 +18,7 @@ class CpuCardHolder extends BaseCardHolder {
   }
 
   destroy() {
+    super.destroy()
     this.scene.events.off('announceBall')
   }
 }
