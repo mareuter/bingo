@@ -130,7 +130,14 @@ class CpuBingo extends Scene {
       await this.messagePanel.setAndClear(`${player.name} cried Wolf!!`)
       player.wolfCries++
       if (MAX_WOLF_CRIES === player.wolfCries) {
-        await this.endGameAndReset(['You have been kicked out!', 'Resetting game.'])
+        let winner = undefined
+        if (player.name === 'CPU') {
+          winner = this.player.name
+        } else {
+          winner = this.cpuPlayer.name
+        }
+        await this.messagePanel.setAndClear(`${player.name} has been kicked out!`)
+        await this.endGameAndReset([`${winner} Won.`, 'Resetting game.'])
       } else {
         const wolfCriesLeft = MAX_WOLF_CRIES - player.wolfCries
         await this.messagePanel.setAndClear(`${wolfCriesLeft} more Wolf cries and you're out.`)
