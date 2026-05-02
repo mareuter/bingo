@@ -3,7 +3,8 @@ import { GameObjects, Scene, Sound, Time } from 'phaser'
 import GameLeader from '@repo/core/src/game-leader'
 import RandomBag from '@repo/core/src/random-bag'
 import BingoCard from '@repo/core/src/bingo-card'
-import PlayerRecord from '@repo/core/src/player-record'
+import HumanPlayer from '@repo/core/src/human-player'
+import type Player from '@repo/core/src/player'
 import { GAMETYPES } from '@repo/core/src/game-types'
 import { MAX_WOLF_CRIES } from '@repo/core/src/constants'
 import MessagePanel from '../game-objects/message-panel'
@@ -22,7 +23,7 @@ class SoloBingo extends Scene {
   messagePanel: MessagePanel
   cardHolder: CardHolder
   updateGameEvent: Time.TimerEvent
-  player: PlayerRecord
+  player: HumanPlayer
   gameType: GameObjects.Text
   announceTone: Sound.NoAudioSound | Sound.HTML5AudioSound | Sound.WebAudioSound
 
@@ -35,10 +36,7 @@ class SoloBingo extends Scene {
     this.registry.set(REGISTRY_KEYS.PLAYTONE, true)
     this.registry.set(REGISTRY_KEYS.GAMETYPE, GAMETYPES.CLASSIC)
     this.gameLeader = new GameLeader(new RandomBag())
-    this.player = {
-      numCards: this.registry.get(REGISTRY_KEYS.NUMCARDS),
-      wolfCries: 0,
-    }
+    this.player = new HumanPlayer('Player')
   }
 
   create() {
@@ -80,10 +78,10 @@ class SoloBingo extends Scene {
   }
 
   async startNewGame() {
-    this.player.numCards = this.registry.get(REGISTRY_KEYS.NUMCARDS)
-    this.player.wolfCries = 0
+    this.player.reset(this.registry.get(REGISTRY_KEYS.NUMCARDS))
+    this.player.generateCards(this.gameLeader)
     this.statusPanel.clear()
-    this.cardHolder = new CardHolder(this, this.#sceneInfo.width, this.player.numCards, this.gameLeader)
+    this.cardHolder = new CardHolder(this, this.#sceneInfo.width, this.player)
     await this.messagePanel.setAndClear('Starting Game!')
     this.time.addEvent(this.updateGameEvent)
     this.updateGameEvent.paused = false
@@ -112,17 +110,17 @@ class SoloBingo extends Scene {
     this.events.emit('endGame')
   }
 
-  async handleWinningCard(card: BingoCard) {
+  async handleWinningCard(player: Player, card: BingoCard) {
     this.updateGameEvent.paused = true
     if (this.gameLeader.verify(card, this.registry.get(REGISTRY_KEYS.GAMETYPE))) {
       await this.endGameAndReset(['Player Won!!!', 'Game Over!'])
     } else {
       await this.messagePanel.setAndClear('Player cried Wolf!!')
-      this.player.wolfCries++
-      if (MAX_WOLF_CRIES === this.player.wolfCries) {
+      player.wolfCries++
+      if (MAX_WOLF_CRIES === player.wolfCries) {
         await this.endGameAndReset(['You have been kicked out!', 'Resetting game.'])
       } else {
-        const wolfCriesLeft = MAX_WOLF_CRIES - this.player.wolfCries
+        const wolfCriesLeft = MAX_WOLF_CRIES - player.wolfCries
         await this.messagePanel.setAndClear(`${wolfCriesLeft} more Wolf cries and you're out.`)
         this.updateGameEvent.paused = false
       }

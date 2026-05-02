@@ -10,7 +10,7 @@ import { MAX_WOLF_CRIES } from '@repo/core/src/constants'
 import MessagePanel from '../game-objects/message-panel'
 import SceneInfo from '../scene-info'
 import StatusPanel from '../game-objects/status-panel'
-import NewCardHolder from '../game-objects/new-card-holder'
+import CardHolder from '../game-objects/card-holder'
 import Toolbar from '../game-objects/toolbar'
 import { GAME_TYPE_FONT } from '../font-configs'
 import { GAME_KEYS, REGISTRY_KEYS } from '../common'
@@ -23,7 +23,7 @@ class CpuBingo extends Scene {
   gameLeader: GameLeader
   toolbar: Toolbar
   messagePanel: MessagePanel
-  cardHolder: NewCardHolder
+  cardHolder: CardHolder
   cpuCardHolder: CpuCardHolder
   updateGameEvent: Time.TimerEvent
   player: HumanPlayer
@@ -88,7 +88,7 @@ class CpuBingo extends Scene {
     this.player.reset(this.registry.get(REGISTRY_KEYS.NUMCARDS))
     this.player.generateCards(this.gameLeader)
     this.statusPanel.clear()
-    this.cardHolder = new NewCardHolder(this, this.#sceneInfo.width, this.player)
+    this.cardHolder = new CardHolder(this, this.#sceneInfo.width, this.player)
     this.cpuCardHolder = new CpuCardHolder(this, this.cpuPlayer)
     await this.messagePanel.setAndClear('Starting Game!')
     await this.messagePanel.setAndClear(`CPU has ${this.cpuPlayer.numCards} cards.`)
