@@ -12,7 +12,7 @@ import SceneInfo from '../scene-info'
 import StatusPanel from '../game-objects/status-panel'
 import CardHolder from '../game-objects/card-holder'
 import Toolbar from '../game-objects/toolbar'
-import { GAME_TYPE_FONT } from '../font-configs'
+import { GAME_TYPE_FONT, SCORE_PANEL_FONT } from '../font-configs'
 import { GAME_KEYS, REGISTRY_KEYS } from '../common'
 import Player from '@repo/core/src/player'
 import CpuCardHolder from '../game-objects/cpu-card-holder'
@@ -29,16 +29,25 @@ class CpuBingo extends Scene {
   player: HumanPlayer
   cpuPlayer: CpuPlayer
   gameType: GameObjects.Text
+  playerScore: GameObjects.Text
+  cpuScore: GameObjects.Text
   announceTone: Sound.NoAudioSound | Sound.HTML5AudioSound | Sound.WebAudioSound
 
   constructor() {
     super(GAME_KEYS.CPUBINGO)
   }
 
+  _makeScoreString(player: Player, regKey: string): string {
+    const score: number = this.registry.get(regKey)
+    return `${player.name}: ` + score.toString().padStart(3, ' ')
+  }
+
   init() {
     this.registry.set(REGISTRY_KEYS.NUMCARDS, 1)
     this.registry.set(REGISTRY_KEYS.PLAYTONE, true)
     this.registry.set(REGISTRY_KEYS.GAMETYPE, GAMETYPES.CLASSIC)
+    this.registry.set(REGISTRY_KEYS.PLAYERSCORE, 100)
+    this.registry.set(REGISTRY_KEYS.CPUSCORE, 100)
     this.gameLeader = new GameLeader(new RandomBag())
     this.player = new HumanPlayer('Player')
     this.cpuPlayer = new CpuPlayer()
@@ -48,6 +57,23 @@ class CpuBingo extends Scene {
     this.#sceneInfo = new SceneInfo(this)
     this.add.image(this.#sceneInfo.centerWidth, this.#sceneInfo.centerHeight, 'background')
     this.announceTone = this.sound.add('tone')
+
+    this.playerScore = this.add
+      .text(
+        (1 / 24) * this.#sceneInfo.centerWidth,
+        35,
+        this._makeScoreString(this.player, REGISTRY_KEYS.PLAYERSCORE),
+        SCORE_PANEL_FONT.toPhaserFontConfig(),
+      )
+      .setOrigin(0, 0.5)
+    this.cpuScore = this.add
+      .text(
+        (13 / 8) * this.#sceneInfo.centerWidth,
+        35,
+        this._makeScoreString(this.cpuPlayer, REGISTRY_KEYS.CPUSCORE),
+        SCORE_PANEL_FONT.toPhaserFontConfig(),
+      )
+      .setOrigin(0, 0.5)
 
     this.toolbar = new Toolbar(this, this.#sceneInfo.centerWidth, 35)
     this.statusPanel = new StatusPanel(this, this.#sceneInfo.centerWidth, 190)
@@ -69,6 +95,12 @@ class CpuBingo extends Scene {
       (_parent: object, key: string, _value: number) => {
         if (key === REGISTRY_KEYS.GAMETYPE) {
           this.gameType.text = this.registry.get(REGISTRY_KEYS.GAMETYPE)
+        }
+        if (key === REGISTRY_KEYS.CPUSCORE) {
+          this.cpuScore.text = this._makeScoreString(this.cpuPlayer, REGISTRY_KEYS.CPUSCORE)
+        }
+        if (key === REGISTRY_KEYS.PLAYERSCORE) {
+          this.playerScore.text = this._makeScoreString(this.player, REGISTRY_KEYS.PLAYERSCORE)
         }
       },
       this,
@@ -125,6 +157,12 @@ class CpuBingo extends Scene {
     console.log(`Checking winning card for ${player.name}`)
     this.updateGameEvent.paused = true
     if (this.gameLeader.verify(card, this.registry.get(REGISTRY_KEYS.GAMETYPE))) {
+      if (player.name === 'CPU') {
+        this.registry.inc(REGISTRY_KEYS.CPUSCORE)
+      }
+      if (player.name === 'Player') {
+        this.registry.inc(REGISTRY_KEYS.PLAYERSCORE)
+      }
       await this.endGameAndReset([`${player.name} Won!!!`, 'Game Over!'])
     } else {
       await this.messagePanel.setAndClear(`${player.name} cried Wolf!!`)
@@ -133,8 +171,10 @@ class CpuBingo extends Scene {
         let winner = undefined
         if (player.name === 'CPU') {
           winner = this.player.name
+          this.registry.inc(REGISTRY_KEYS.PLAYERSCORE)
         } else {
           winner = this.cpuPlayer.name
+          this.registry.inc(REGISTRY_KEYS.CPUSCORE)
         }
         await this.messagePanel.setAndClear(`${player.name} has been kicked out!`)
         await this.endGameAndReset([`${winner} Won.`, 'Resetting game.'])

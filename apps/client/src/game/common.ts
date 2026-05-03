@@ -20,4 +20,6 @@ export const REGISTRY_KEYS = {
   GAMETYPE: 'gameType',
   NUMCARDS: 'numCards',
   PLAYTONE: 'playTone',
+  PLAYERSCORE: 'playerScore',
+  CPUSCORE: 'cpuScore',
 }
