@@ -1,27 +1,28 @@
 import { Scene } from 'phaser'
-import BingoCard from '@repo/core/src/bingo-card'
-import GameLeader from '@repo/core/src/game-leader'
 import CardPanel from './card-panel'
+import Player from '@repo/core/src/player'
+import BaseCardHolder from './base-card-holder'
 
-class CardHolder {
-  numCards: number
+class CardHolder extends BaseCardHolder {
   cardPanels: CardPanel[]
 
-  constructor(scene: Scene, x: number, numCards: number, gameLeader: GameLeader) {
-    this.numCards = numCards
+  constructor(scene: Scene, x: number, player: Player) {
+    super(scene, player)
 
-    const deltaX = Math.floor(x / (this.numCards + 1))
+    const numCards = this.player.numCards
+
+    const deltaX = Math.floor(x / (numCards + 1))
 
     const spots: number[] = []
-    if (this.numCards === 1) {
+    if (numCards === 1) {
       spots.push(deltaX)
     }
-    if (this.numCards === 2) {
+    if (numCards === 2) {
       const offsetX = 20
       spots.push(deltaX + offsetX)
       spots.push(2 * deltaX - offsetX)
     }
-    if (this.numCards === 3) {
+    if (numCards === 3) {
       const offsetX = 40
       spots.push(deltaX - offsetX)
       spots.push(2 * deltaX)
@@ -29,14 +30,13 @@ class CardHolder {
     }
 
     this.cardPanels = []
-    spots.forEach((xLoc) => {
-      const card = new BingoCard()
-      gameLeader.signCard(card)
-      this.cardPanels.push(new CardPanel(scene, xLoc, 400, card))
-    })
+    for (let i = 0; i < spots.length; i++) {
+      this.cardPanels.push(new CardPanel(scene, spots.at(i)!, 400, this.player.bingoCards.at(i)!))
+    }
   }
 
   destroy() {
+    super.destroy()
     this.cardPanels.forEach((cardPanel) => {
       cardPanel.destroy()
     })

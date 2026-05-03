@@ -50,7 +50,7 @@ class CardPanel {
   handleWinningCard(id: string) {
     if (id === this.bingoCard.getSignature()) {
       console.log(`Winning card being sent`)
-      this.scene.events.emit('haveWinningCard', this.bingoCard)
+      this.scene.events.emit('handleWinningCard', this.bingoCard)
     }
   }
 

@@ -1,24 +1,30 @@
 {
-    "name": "@repo/core",
-    "version": "0.1.0",
-    "type": "module",
-    "scripts": {
-        "dev": "tsc --watch",
-        "build": "tsc",
-        "test": "vitest",
-        "lint": "eslint . --max-warnings 0",
-        "lint:fix": "eslint --fix",
-        "format": "prettier --write .",
-        "check-format": "prettier --check ."
-    },
-    "devDependencies": {
-        "@repo/eslint-config": "workspace:*",
-        "@repo/typescript-config": "workspace:*",
-        "@repo/vitest-config": "workspace:*",
-        "@types/node": "^22.19.3",
-        "@vitest/coverage-istanbul": "^4.0.16",
-        "eslint": "^9.39.2",
-        "typescript": "latest",
-        "vitest": "^4.0.16"
-    }
+  "name": "@repo/core",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "test": "vitest",
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint --fix",
+    "format": "prettier --write .",
+    "check-format": "prettier --check ."
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@repo/vitest-config": "workspace:*",
+    "@types/node": "^22.19.3",
+    "@vitest/coverage-istanbul": "^4.0.16",
+    "eslint": "^9.39.2",
+    "typescript": "latest",
+    "vitest": "^4.0.16"
+  },
+  "lint-staged": {
+    "**/*.{ts,tsx,js,jsx}": [
+      "pnpm lint:fix",
+      "pnpm format"
+    ]
+  }
 }

@@ -2,6 +2,7 @@ import { AUTO, Types } from 'phaser'
 
 import BootLoader from './scenes/bootloader'
 import SoloBingo from './scenes/solo-bingo'
+import CpuBingo from './scenes/cpu-bingo'
 import MainMenu from './scenes/main-menu'
 import Splash from './scenes/splash'
 import GameMenu from './scenes/game-menu'
@@ -16,7 +17,7 @@ const config: Types.Core.GameConfig = {
   dom: {
     createContainer: true,
   },
-  scene: [BootLoader, Splash, MainMenu, GameMenu, SoloBingo],
+  scene: [BootLoader, Splash, MainMenu, GameMenu, SoloBingo, CpuBingo],
   // scene: [BootLoader, SoloBingo],
   // scene: [BootLoader, GameMenu],
 }

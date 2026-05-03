@@ -12,6 +12,7 @@ export const GAME_KEYS = {
   SPLASH: 'Splash',
   MAINMENU: 'MainMenu',
   SOLOBINGO: 'SoloBingo',
+  CPUBINGO: 'CpuBingo',
   GAMEMENU: 'GameMenu',
 }
 
@@ -19,4 +20,6 @@ export const REGISTRY_KEYS = {
   GAMETYPE: 'gameType',
   NUMCARDS: 'numCards',
   PLAYTONE: 'playTone',
+  PLAYERSCORE: 'playerScore',
+  CPUSCORE: 'cpuScore',
 }
