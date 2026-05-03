@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@repo/core": "workspace:*",
-    "phaser": "^3.90.0"
+    "phaser": "^4.1.0"
   },
   "lint-staged": {
     "**/*.{ts,tsx,js,jsx}": [
