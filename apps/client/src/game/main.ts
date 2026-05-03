@@ -1,3 +1,4 @@
+import Phaser from 'phaser'
 import { AUTO, Types } from 'phaser'
 
 import BootLoader from './scenes/bootloader'
