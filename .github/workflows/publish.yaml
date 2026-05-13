@@ -1,0 +1,11 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  publish:
+    uses: mareuter/shared-workflows/.github/workflows/publish-tauri.yaml@main
