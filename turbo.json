@@ -31,6 +31,9 @@
     },
     "transit": {
       "dependsOn": ["^transit"]
+    },
+    "tauri": {
+      "dependsOn": ["^tauri"]
     }
   }
 }
