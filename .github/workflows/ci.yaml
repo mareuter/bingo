@@ -1,0 +1,11 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - "main"
+
+jobs:
+  ci:
+    uses: mareuter/shared-workflows/.github/workflows/ci-pnpm-turborepo.yaml@main

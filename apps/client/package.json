@@ -9,7 +9,7 @@
     "lint:fix": "eslint --fix",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
-    "tauri": "tauri"
+    "tauri": "tauri build"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
