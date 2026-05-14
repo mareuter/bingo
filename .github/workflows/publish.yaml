@@ -8,4 +8,6 @@ on:
 
 jobs:
   publish:
+    permissions:
+      contents: write
     uses: mareuter/shared-workflows/.github/workflows/publish-tauri.yaml@main
