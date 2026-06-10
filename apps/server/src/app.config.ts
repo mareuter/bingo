@@ -3,14 +3,14 @@ import { defineServer, defineRoom, monitor, playground, createRouter, createEndp
 /**
  * Import your Room files
  */
-import { MyRoom } from './rooms/MyRoom.js'
+import { BingoRoom } from './rooms/BingoRoom'
 
 const server = defineServer({
   /**
    * Define your room handlers:
    */
   rooms: {
-    my_room: defineRoom(MyRoom),
+    bingo_room: defineRoom(BingoRoom),
   },
 
   /**

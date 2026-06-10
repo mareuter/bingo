@@ -1,16 +1,9 @@
 {
+  "extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
-    "outDir": "build",
-    "target": "ESNext",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "strict": true,
-    "allowJs": true,
-    "strictNullChecks": false,
-    "esModuleInterop": true,
+    "outDir": "dist",
+    "rootDir": ".",
     "experimentalDecorators": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
     "useDefineForClassFields": false
   },
   "include": ["src", "test"]
