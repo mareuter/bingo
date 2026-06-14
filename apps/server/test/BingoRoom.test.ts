@@ -36,4 +36,50 @@ describe('testing your Colyseus app', () => {
     expect(player1?.num).toBe(1)
     expect(player1?.score).toBe(0)
   })
+
+  test('Connect multiple clients', async () => {
+    const room = await colyseus.createRoom<BingoRoomState>('bingo_room', {})
+    const client1 = await colyseus.connectTo(room)
+    let client1_recv = ''
+    client1.onMessage('playerJoined', (message) => {
+      client1_recv = message
+    })
+
+    await client1.waitForMessage('playerJoined')
+    expect(client1_recv).toBe('You joined.')
+
+    const client2 = await colyseus.connectTo(room)
+    let client2_recv = ''
+    client2.onMessage('playerJoined', (message) => {
+      client2_recv = message
+    })
+
+    await room.waitForNextPatch()
+
+    expect(client1.state.players.size).toBe(2)
+    expect(client2.state.players.size).toBe(2)
+
+    expect(client1_recv).toBe('Player 2 joined.')
+    expect(client2_recv).toBe('You joined.')
+  })
+
+  test('Start game', async () => {
+    const room = await colyseus.createRoom<BingoRoomState>('bingo_room', { startGameTimeout: 0.001 })
+    const client1 = await colyseus.connectTo(room)
+    let client1_recv = ''
+    client1.onMessage('gameStarting', (message) => {
+      client1_recv = message
+    })
+    const client2 = await colyseus.connectTo(room)
+
+    await room.waitForNextPatch()
+
+    client1.send('gameStart', true)
+
+    await room.waitForNextPatch()
+
+    expect(client1.state.gameHasStarted).toBeTruthy()
+    expect(client2.state.gameHasStarted).toBeTruthy()
+    expect(client1_recv).toBe('Game starts now!')
+  })
 })
