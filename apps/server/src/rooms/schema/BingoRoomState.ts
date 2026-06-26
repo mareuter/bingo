@@ -2,8 +2,6 @@ import { MapSchema, Schema, type } from '@colyseus/schema'
 import Player from './Player'
 
 export class BingoRoomState extends Schema {
-  @type('string') mySynchronizedProperty: string = 'Hello world'
-
   // Boolean indicating whether the game has started
   @type('boolean') gameHasStarted: boolean = false
 

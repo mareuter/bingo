@@ -29,7 +29,6 @@ describe('testing your Colyseus app', () => {
     const stateJSON = client1.state.toJSON()
     expect(stateJSON.gameHasStarted).toBeFalsy()
     expect(stateJSON.gameOver).toBeFalsy()
-    expect(stateJSON.mySynchronizedProperty).toBe('Hello world')
     const players = stateJSON.players
     expect(players[client1.sessionId]).toBeDefined()
     const player1 = players[client1.sessionId]

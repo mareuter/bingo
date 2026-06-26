@@ -10,12 +10,6 @@ export class BingoRoom extends Room {
   delayedInterval!: Delayed
 
   messages = {
-    yourMessageType: (client: Client, message: any) => {
-      /**
-       * Handle "yourMessageType" message.
-       */
-      console.log(client.sessionId, 'sent a message:', message)
-    },
     gameStart: (_client: Client, message: boolean) => {
       if (!this.state.gameHasStarted) {
         this.state.gameHasStarted = message
