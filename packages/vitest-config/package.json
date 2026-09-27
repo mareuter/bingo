@@ -18,14 +18,14 @@
     "view-report": "open coverage/report/index.html"
   },
   "dependencies": {
-    "vitest": "^4.0.16"
+    "vitest": "^4.1.11"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^22",
-    "@vitest/coverage-istanbul": "^4.0.16",
-    "@vitest/ui": "4.0.16",
+    "@vitest/coverage-istanbul": "^4.1.11",
+    "@vitest/ui": "4.1.11",
     "glob": "^13.0.0",
     "jsdom": "^27.4.0",
     "nyc": "^17.1.0",
