@@ -10,7 +10,7 @@ export class BingoRoom extends Room {
   delayedInterval!: Delayed
 
   messages = {
-    gameStart: (_client: Client, message: boolean) => {
+    gameStarting: (_client: Client, message: boolean) => {
       if (!this.state.gameHasStarted) {
         this.state.gameHasStarted = message
         this.broadcast('gameStarting', `Game starts in ${this.startGameTimeout} seconds`)
