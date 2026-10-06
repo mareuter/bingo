@@ -5,5 +5,6 @@ export const GAMETYPES = {
   HAPPYH: 'Happy H',
   FIVESPOT: 'Five Spot',
   XMARKS: 'X Marks',
+  NONE: 'None',
 } as const
 export type GameTypes = keyof typeof GAMETYPES

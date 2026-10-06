@@ -1,14 +1,29 @@
 import { ArraySchema, Schema, type } from '@colyseus/schema'
+import BingoCard from '@repo/core/src/bingo-card'
 
 class Player extends Schema {
-  // Player number
-  @type('number') num = 0
+  // Seat number fo player
+  @type('number') seat = -1
 
-  // Array of card Ids for the player when cards are created
-  @type(['string']) cardIds = new ArraySchema<string>()
+  // Session Id
+  @type('string') sessionId = ''
 
-  // Number of games won by the player
-  @type('number') score = 0
+  // Array of Bingo cards
+  @type([BingoCard]) cards = new ArraySchema<BingoCard>()
+
+  // Wolf cry count
+  @type('number') wolfCries = 0
+
+  // Is player a computer
+  @type('boolean') isCpu = false
+
+  name(): string {
+    if (this.isCpu) {
+      return `Cpu ${this.seat + 1}`
+    } else {
+      return `Player ${this.seat + 1}`
+    }
+  }
 }
 
 export default Player
