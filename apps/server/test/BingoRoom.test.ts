@@ -4,6 +4,7 @@ import { ColyseusTestServer, boot } from '@colyseus/testing'
 // import your "app.config.ts" file here.
 import appConfig from '../src/app.config'
 import { BingoRoomState } from '../src/rooms/schema/BingoRoomState'
+import { GameOptions } from '../src/rooms/RoomOptions'
 
 describe('testing your Colyseus app', () => {
   let colyseus: ColyseusTestServer<typeof appConfig>
@@ -43,7 +44,7 @@ describe('testing your Colyseus app', () => {
     const room = await colyseus.createRoom<BingoRoomState>('bingo_room', {})
     const client1 = await colyseus.connectTo(room)
     const client1State = new Promise((res) => client1.onStateChange(res))
-    const client2 = await colyseus.connectTo(room)
+    const client2 = await colyseus.connectTo(room, { numberOfCards: 3 } as GameOptions)
     const client2State = new Promise((res) => client2.onStateChange(res))
 
     await room.waitForNextPatch()
@@ -61,8 +62,10 @@ describe('testing your Colyseus app', () => {
 
     expect(player1?.sessionId).toBe(client1.sessionId)
     expect(player1?.isCpu).toBeFalsy()
+    expect(player1?.cards.length).toBe(1)
     expect(player2?.sessionId).toBe(client2.sessionId)
     expect(player2?.isCpu).toBeFalsy()
+    expect(player2?.cards.length).toBe(3)
   })
 
   test('Start game', async () => {

@@ -7,6 +7,7 @@ import GameLeader from '@repo/core/src/game-leader'
 import RandomBag from '@repo/core/src/random-bag'
 import BingoCard from '@repo/core/src/bingo-card'
 import { MAX_WOLF_CRIES } from '@repo/core/src/constants'
+import BingoCardSchema from './schema/BingoCardSchema'
 
 export class BingoRoom extends Room {
   maxClients = 4
@@ -28,28 +29,19 @@ export class BingoRoom extends Room {
       }
     },
     getCards: (client: Client, message: number) => {
-      const player = this.findPlayerBySession(client.sessionId)
-      if (player === null) {
-        return
-      }
-      player.cards.clear()
-      for (let i = 0; i < message; i++) {
-        const c = new BingoCard()
-        this.gameLeader.signCard(c)
-        player.cards.push(c)
-      }
+      this.getCards(client, message)
     },
     haveWinningCard: (client: Client, message: string) => {
       this.handleWinningCard(client, message)
     },
   }
 
-  onCreate(options: CreateOptions = { startGameTimeout: 120 }) {
+  onCreate({ startGameTimeout = 120 }: CreateOptions) {
     /**
      * Called when a new room is created.
      */
-    console.log('A')
-    this.startGameTimeout = options.startGameTimeout
+    console.log(`S: ${startGameTimeout}`)
+    this.startGameTimeout = startGameTimeout
     for (let i = 0; i < this.maxClients; i++) {
       const p = new Player()
       p.seat = i
@@ -58,12 +50,10 @@ export class BingoRoom extends Room {
       this.state.players.set(String(i), p)
       this.state.scores.set(String(i), 0)
     }
-    console.log('B')
     this.clock.start()
-    console.log('C')
   }
 
-  onJoin(client: Client, options: GameOptions) {
+  onJoin(client: Client, { numberOfCards = 1, gameType = 'CLASSIC' }: GameOptions) {
     /**
      * Called when a client joins the room.
      */
@@ -74,6 +64,7 @@ export class BingoRoom extends Room {
 
     oldCpuPlayer.isCpu = false
     oldCpuPlayer.sessionId = client.sessionId
+    this.setPlayerCards(oldCpuPlayer, numberOfCards)
 
     client.send('gameMessage', 'You joined.')
     this.broadcast('gameMessage', `${oldCpuPlayer.name()} joined.`, { except: client })
@@ -81,10 +72,10 @@ export class BingoRoom extends Room {
     client.view = new StateView()
     client.view.add(oldCpuPlayer)
 
-    if (options.gameType === this.state.gameType) {
+    if (gameType === this.state.gameType) {
       client.send('gameMessage', `Game type already set: ${this.state.gameType}`)
     } else {
-      this.state.gameType = options.gameType
+      this.state.gameType = gameType
     }
   }
 
@@ -128,16 +119,40 @@ export class BingoRoom extends Room {
     return this.state.players.get(String(seatIndex))!
   }
 
+  private getCards(c: Client, nc: number) {
+    const player = this.findPlayerBySession(c.sessionId)
+    if (player === null) {
+      return
+    }
+    this.setPlayerCards(player, nc)
+    c.view?.add(player)
+  }
+
+  private setPlayerCards(p: Player, n: number) {
+    p.cards.clear()
+    console.log(`Q: ${n}`)
+    for (let i = 0; i < n; i++) {
+      const c = new BingoCard()
+      this.gameLeader.signCard(c)
+      console.log('R')
+      const bcs = new BingoCardSchema()
+      bcs.signature = c.getSignature()!
+      bcs.values = String(c.boardValues)
+      p.cards.push(bcs)
+    }
+  }
+
   private handleWinningCard(c: Client, id: string) {
     const player = this.findPlayerBySession(c.sessionId)
     if (player === null) {
       return
     }
-    const card = player.cards.find((u) => u.getSignature() === id)
+    const card = player.cards.find((u) => u.signature === id)
     let needsDisconnection = false
     if (card === undefined) {
       needsDisconnection = this.handleWolfCry(player)
     } else {
+      // FIXME: Need to convert BingoCardSchema to BingoCard
       if (this.gameLeader.verify(card, this.state.gameType)) {
         this.broadcast('gameMessage', `${player.name()} won!!!`)
         let score = this.state.scores.get(String(player.seat))

@@ -1,5 +1,5 @@
 import { ArraySchema, Schema, type } from '@colyseus/schema'
-import BingoCard from '@repo/core/src/bingo-card'
+import BingoCardSchema from './BingoCardSchema'
 
 class Player extends Schema {
   // Seat number fo player
@@ -9,7 +9,7 @@ class Player extends Schema {
   @type('string') sessionId = ''
 
   // Array of Bingo cards
-  @type([BingoCard]) cards = new ArraySchema<BingoCard>()
+  @type([BingoCardSchema]) cards = new ArraySchema<BingoCardSchema>()
 
   // Wolf cry count
   @type('number') wolfCries = 0
