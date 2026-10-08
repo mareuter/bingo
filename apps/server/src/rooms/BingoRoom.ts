@@ -13,19 +13,21 @@ export class BingoRoom extends Room {
   maxClients = 4
   state = new BingoRoomState()
   startGameTimeout = 0
-  delayedInterval!: Delayed
-  ballCallInterval!: Delayed
-  gameLeader: GameLeader = new GameLeader(new RandomBag())
+  startGameDelay!: Delayed
+  ballCallInterval = 0
+  ballCallDelay!: Delayed
+  gameLeader: GameLeader = new GameLeader(new RandomBag(), true)
 
   messages = {
-    gameStarting: (_client: Client, message: boolean) => {
-      if (!this.state.gameHasStarted) {
-        this.state.gameHasStarted = message
-        this.broadcast('gameStarting', `Game starts in ${this.startGameTimeout} seconds`)
-        // this.clock.start()
-        this.clock.setTimeout(() => {
-          this.broadcast('gameStarting', 'Game starts now!')
-        }, this.startGameTimeout * 1000)
+    ready: (client: Client, _message: boolean) => {
+      if (!this.gameLeader.isWaiting()) {
+        console.log('Z')
+        this.gameLeader.waiting()
+        this.broadcast('gameMessage', `Game starts in ${this.startGameTimeout} seconds`)
+        this.startGameDelay = this.clock.setTimeout(() => this.startGame(), this.startGameTimeout * 1000)
+      } else {
+        const remaining = (this.startGameTimeout * 1000 - this.startGameDelay.elapsedTime) / 1000
+        client.send('gameMessage', `Game starting in ${remaining} seconds!`)
       }
     },
     getCards: (client: Client, message: number) => {
@@ -36,12 +38,13 @@ export class BingoRoom extends Room {
     },
   }
 
-  onCreate({ startGameTimeout = 120 }: CreateOptions) {
+  onCreate({ startGameTimeout = 120, ballCallInterval = 3 }: CreateOptions) {
     /**
      * Called when a new room is created.
      */
     console.log(`S: ${startGameTimeout}`)
     this.startGameTimeout = startGameTimeout
+    this.ballCallInterval = ballCallInterval
     for (let i = 0; i < this.maxClients; i++) {
       const p = new Player()
       p.seat = i
@@ -98,6 +101,21 @@ export class BingoRoom extends Room {
      */
     console.log('room', this.roomId, 'disposing...')
   }
+
+  private announceBall() {
+    const bb = this.gameLeader.announceBall()
+    console.log(`E: ${bb.toString()}`)
+    this.state.currentBingoBall = bb.toString()
+    this.checkCpuCards()
+    if (this.gameLeader.isGameOver()) {
+      this.ballCallDelay.clear()
+      this.broadcast('gameMessage', 'Game Over!')
+      this.broadcast('gameMessage', 'Nobody Won!')
+      this.resetGame()
+    }
+  }
+
+  private checkCpuCards() {}
 
   private findCpuSeat(): Player | null {
     let found: Player | null = null
@@ -182,5 +200,18 @@ export class BingoRoom extends Room {
       this.broadcast('gameMessage', `${pStr} will be kicked out.`)
       return true
     }
+  }
+
+  private resetGame() {
+    this.gameLeader.reset(true)
+    this.unlock()
+  }
+
+  private startGame() {
+    console.log('ZZ')
+    this.state.gameHasStarted = true
+    this.lock()
+    this.broadcast('gameMessage', 'Game starts now!')
+    this.ballCallDelay = this.clock.setInterval(() => this.announceBall, this.ballCallInterval * 1000)
   }
 }

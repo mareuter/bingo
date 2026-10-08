@@ -69,20 +69,28 @@ describe('testing your Colyseus app', () => {
   })
 
   test('Start game', async () => {
-    const room = await colyseus.createRoom<BingoRoomState>('bingo_room', { startGameTimeout: 0.001 })
+    const room = await colyseus.createRoom<BingoRoomState>('bingo_room', {
+      startGameTimeout: 0.01,
+      ballCallInterval: 0.001,
+    })
     const client1 = await colyseus.connectTo(room)
     const client2 = await colyseus.connectTo(room)
 
     await room.waitForNextPatch()
 
-    client1.send('gameStarting', true)
-    let client1Recv = new Promise((res) => client1.onMessage('gameStarting', res))
-    await expect(client1Recv).resolves.toBe('Game starts in 0.001 seconds')
-    client1Recv = new Promise((res) => client1.onMessage('gameStarting', res))
+    client1.send('ready', true)
+    let client1Recv = new Promise<string>((res) => client1.onMessage('gameMessage', res))
+    await expect(client1Recv).resolves.toBe('Game starts in 0.01 seconds')
+
+    client1Recv = new Promise<string>((res) => client1.onMessage('gameMessage', res))
     await expect(client1Recv).resolves.toBe('Game starts now!')
+
     await room.waitForNextPatch()
 
     expect(client1.state.gameHasStarted).toBeTruthy()
     expect(client2.state.gameHasStarted).toBeTruthy()
+
+    expect(client1.state.currentBingoBall).toBe('-2')
+    expect(client2.state.currentBingoBall).toBe('-2')
   })
 })

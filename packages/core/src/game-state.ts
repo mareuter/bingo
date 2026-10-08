@@ -1,4 +1,5 @@
 export const GAMESTATE = {
+  IDLE: 'IDLE',
   WAITING: 'WAITING',
   PLAYING: 'PLAYING',
   GAMEOVER: 'GAMEOVER',

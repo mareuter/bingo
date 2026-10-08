@@ -8,17 +8,25 @@ import { GAMETYPES } from './game-types'
 class GameLeader {
   #announcedBalls: BingoBall[] = []
   #bagOfBalls: BagOfBalls
-  #gameState: GameState
+  #gameState?: GameState
 
-  constructor(bagOfBalls: BagOfBalls) {
+  constructor(bagOfBalls: BagOfBalls, idleStart: boolean = false) {
     this.resetAnnouncedBalls()
     this.#bagOfBalls = bagOfBalls
-    this.#gameState = GAMESTATE.WAITING
+    this._setInitialGameState(idleStart)
   }
 
   private _findBall(ball: BingoBall): boolean {
     const r = this.#announcedBalls.find((u) => ball.equals(u))
     return r !== undefined
+  }
+
+  private _setInitialGameState(idleStart: boolean) {
+    if (idleStart) {
+      this.#gameState = GAMESTATE.IDLE
+    } else {
+      this.#gameState = GAMESTATE.WAITING
+    }
   }
 
   announceBall(): BingoBall {
@@ -40,6 +48,10 @@ class GameLeader {
     return this.#bagOfBalls.length
   }
 
+  isIdle() {
+    return this.#gameState === GAMESTATE.IDLE
+  }
+
   isGameOver() {
     return this.#gameState === GAMESTATE.GAMEOVER
   }
@@ -56,8 +68,8 @@ class GameLeader {
     return this.#announcedBalls.length - 1
   }
 
-  reset() {
-    this.#gameState = GAMESTATE.WAITING
+  reset(idleStart: boolean = false) {
+    this._setInitialGameState(idleStart)
     this.resetAnnouncedBalls()
     this.#bagOfBalls.refillBag()
   }
@@ -208,6 +220,10 @@ class GameLeader {
       }
     }
     return diagMatches === BingoCard.SIZE && otherDiagMatches === BingoCard.SIZE
+  }
+
+  waiting() {
+    this.#gameState = GAMESTATE.WAITING
   }
 }
 
