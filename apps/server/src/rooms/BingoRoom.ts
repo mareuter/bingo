@@ -35,7 +35,15 @@ export class BingoRoom extends Room {
       this.getCards(client, message)
     },
     haveWinningCard: (client: Client, message: string) => {
-      this.handleWinningCard(client, message)
+      const player = this.findPlayerBySession(client.sessionId)
+      if (player === null) {
+        return
+      }
+      const needsDisconnection = this.handleWinningCard(player, message)
+      if (needsDisconnection) {
+        client.send('gameMessage', 'You have been kicked out for crying Wolf too many times!')
+        client.leave(4011, 'WOLFCRIER')
+      }
     },
   }
 
@@ -57,6 +65,9 @@ export class BingoRoom extends Room {
       p.isCpu = true
       this.state.players.set(String(i), p)
       this.state.scores.set(String(i), 0)
+      this.bingoCards.set(p.sessionId, [])
+      const numCards = Math.floor(Math.random() * 3) + 1
+      this.setPlayerCards(p, numCards)
     }
     this.clock.start()
   }
@@ -70,6 +81,8 @@ export class BingoRoom extends Room {
     const oldCpuPlayer = this.findCpuSeat()
     if (!oldCpuPlayer) return
 
+    this.bingoCards.delete(oldCpuPlayer.sessionId)
+
     oldCpuPlayer.isCpu = false
     oldCpuPlayer.sessionId = client.sessionId
     this.setPlayerCards(oldCpuPlayer, numberOfCards)
@@ -79,6 +92,16 @@ export class BingoRoom extends Room {
 
     client.view = new StateView()
     client.view.add(oldCpuPlayer)
+
+    let numHuman = 0
+    for (const p of this.state.players.values()) {
+      if (!p.isCpu) {
+        numHuman++
+      }
+    }
+    if (numHuman === this.maxClients) {
+      this.lock()
+    }
 
     if (gameType === this.state.gameType) {
       client.send('gameMessage', `Game type already set: ${this.state.gameType}`)
@@ -123,7 +146,18 @@ export class BingoRoom extends Room {
     }
   }
 
-  private checkCpuCards() {}
+  private checkCpuCards() {
+    for (const player of this.state.players.values()) {
+      if (player.isCpu) {
+        const cards = this.bingoCards.get(player.sessionId)!
+        for (const card of cards) {
+          if (this.gameLeader!.verify(card, this.state.gameType)) {
+            this.handleWinningCard(player, card.getSignature()!)
+          }
+        }
+      }
+    }
+  }
 
   private findCpuSeat(): Player | null {
     let found: Player | null = null
@@ -170,32 +204,25 @@ export class BingoRoom extends Room {
     }
   }
 
-  private handleWinningCard(c: Client, id: string) {
-    const player = this.findPlayerBySession(c.sessionId)
-    if (player === null) {
-      return
-    }
-    const card = player.cards.find((u) => u.signature === id)
+  private handleWinningCard(player: Player, id: string): boolean {
+    const card = this.bingoCards.get(player.sessionId)!.find((u) => u.getSignature() === id)
     let needsDisconnection = false
     if (card === undefined) {
       needsDisconnection = this.handleWolfCry(player)
     } else {
-      // FIXME: Need to convert BingoCardSchema to BingoCard
       if (this.gameLeader!.verify(card, this.state.gameType)) {
         this.broadcast('gameMessage', `${player.name()} won!!!`)
+        this.broadcast('gameMessage', 'Game Over!')
         let score = this.state.scores.get(String(player.seat))
         if (score !== undefined) {
           this.state.scores.set(String(player.seat), score++)
-          // Need to end and reset game
+          this.resetGame()
         }
       } else {
         needsDisconnection = this.handleWolfCry(player)
       }
     }
-    if (needsDisconnection) {
-      c.send('gameMessage', 'You have been kicked out for crying Wolf too many times!')
-      c.leave(4011, 'WOLFCRIER')
-    }
+    return needsDisconnection
   }
 
   private handleWolfCry(p: Player): boolean {

@@ -7,7 +7,7 @@ import { BingoRoomState } from '../src/rooms/schema/BingoRoomState'
 import { CreateOptions, GameOptions } from '../src/rooms/RoomOptions'
 
 import ShortBag from '@repo/core/tests/test-bags/short-bag'
-import { RoomOptions } from 'colyseus'
+// import { RoomOptions } from 'colyseus'
 
 describe('testing your Colyseus app', () => {
   let colyseus: ColyseusTestServer<typeof appConfig>
@@ -106,7 +106,7 @@ describe('testing your Colyseus app', () => {
     } as CreateOptions)
 
     const client1 = await colyseus.connectTo(room)
-    const client1Recv = new Promise<string>((res) => client1.onMessage('gameMessage', res))
+    // const client1Recv = new Promise<string>((res) => client1.onMessage('gameMessage', res))
     const client2 = await colyseus.connectTo(room)
 
     await room.waitForNextPatch()
