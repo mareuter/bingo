@@ -16,13 +16,14 @@ export class BingoRoom extends Room {
   startGameDelay!: Delayed
   ballCallInterval = 0
   ballCallDelay!: Delayed
-  gameLeader: GameLeader = new GameLeader(new RandomBag(), true)
+  gameLeader?: GameLeader
+  bingoCards = new Map<string, BingoCard[]>()
 
   messages = {
     ready: (client: Client, _message: boolean) => {
-      if (!this.gameLeader.isWaiting()) {
+      if (!this.gameLeader?.isWaiting()) {
         console.log('Z')
-        this.gameLeader.waiting()
+        this.gameLeader?.waiting()
         this.broadcast('gameMessage', `Game starts in ${this.startGameTimeout} seconds`)
         this.startGameDelay = this.clock.setTimeout(() => this.startGame(), this.startGameTimeout * 1000)
       } else {
@@ -38,10 +39,14 @@ export class BingoRoom extends Room {
     },
   }
 
-  onCreate({ startGameTimeout = 120, ballCallInterval = 3 }: CreateOptions) {
+  onCreate({ startGameTimeout = 120, ballCallInterval = 3, bagOfBalls = undefined }: CreateOptions) {
     /**
      * Called when a new room is created.
      */
+    if (bagOfBalls === undefined) {
+      bagOfBalls = new RandomBag()
+    }
+    this.gameLeader = new GameLeader(bagOfBalls, true)
     console.log(`S: ${startGameTimeout}`)
     this.startGameTimeout = startGameTimeout
     this.ballCallInterval = ballCallInterval
@@ -92,6 +97,7 @@ export class BingoRoom extends Room {
     }
     console.log(client.sessionId, state, code)
     this.state.players.delete(client.sessionId)
+    this.bingoCards.delete(client.sessionId)
     this.state.numPlayers--
   }
 
@@ -103,12 +109,14 @@ export class BingoRoom extends Room {
   }
 
   private announceBall() {
-    const bb = this.gameLeader.announceBall()
+    const bb = this.gameLeader!.announceBall()
     console.log(`E: ${bb.toString()}`)
     this.state.currentBingoBall = bb.toString()
     this.checkCpuCards()
-    if (this.gameLeader.isGameOver()) {
+    if (this.gameLeader!.isGameOver()) {
       this.ballCallDelay.clear()
+      this.state.gameOver = true
+      console.log(`HHH: ${this.state.gameOver}`)
       this.broadcast('gameMessage', 'Game Over!')
       this.broadcast('gameMessage', 'Nobody Won!')
       this.resetGame()
@@ -147,11 +155,13 @@ export class BingoRoom extends Room {
   }
 
   private setPlayerCards(p: Player, n: number) {
+    this.bingoCards.set(p.sessionId, [])
     p.cards.clear()
     console.log(`Q: ${n}`)
     for (let i = 0; i < n; i++) {
       const c = new BingoCard()
-      this.gameLeader.signCard(c)
+      this.gameLeader!.signCard(c)
+      this.bingoCards.get(p.sessionId)?.push(c)
       console.log('R')
       const bcs = new BingoCardSchema()
       bcs.signature = c.getSignature()!
@@ -171,7 +181,7 @@ export class BingoRoom extends Room {
       needsDisconnection = this.handleWolfCry(player)
     } else {
       // FIXME: Need to convert BingoCardSchema to BingoCard
-      if (this.gameLeader.verify(card, this.state.gameType)) {
+      if (this.gameLeader!.verify(card, this.state.gameType)) {
         this.broadcast('gameMessage', `${player.name()} won!!!`)
         let score = this.state.scores.get(String(player.seat))
         if (score !== undefined) {
@@ -203,7 +213,11 @@ export class BingoRoom extends Room {
   }
 
   private resetGame() {
-    this.gameLeader.reset(true)
+    console.log('II')
+    this.gameLeader!.reset(true)
+    this.state.gameHasStarted = false
+    this.state.gameOver = false
+    console.log('III')
     this.unlock()
   }
 
@@ -212,6 +226,6 @@ export class BingoRoom extends Room {
     this.state.gameHasStarted = true
     this.lock()
     this.broadcast('gameMessage', 'Game starts now!')
-    this.ballCallDelay = this.clock.setInterval(() => this.announceBall, this.ballCallInterval * 1000)
+    this.ballCallDelay = this.clock.setInterval(() => this.announceBall(), this.ballCallInterval * 1000)
   }
 }

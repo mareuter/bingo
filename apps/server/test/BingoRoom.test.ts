@@ -4,7 +4,10 @@ import { ColyseusTestServer, boot } from '@colyseus/testing'
 // import your "app.config.ts" file here.
 import appConfig from '../src/app.config'
 import { BingoRoomState } from '../src/rooms/schema/BingoRoomState'
-import { GameOptions } from '../src/rooms/RoomOptions'
+import { CreateOptions, GameOptions } from '../src/rooms/RoomOptions'
+
+import ShortBag from '@repo/core/tests/test-bags/short-bag'
+import { RoomOptions } from 'colyseus'
 
 describe('testing your Colyseus app', () => {
   let colyseus: ColyseusTestServer<typeof appConfig>
@@ -72,7 +75,8 @@ describe('testing your Colyseus app', () => {
     const room = await colyseus.createRoom<BingoRoomState>('bingo_room', {
       startGameTimeout: 0.01,
       ballCallInterval: 0.001,
-    })
+      bagOfBalls: new ShortBag(),
+    } as CreateOptions)
     const client1 = await colyseus.connectTo(room)
     const client2 = await colyseus.connectTo(room)
 
@@ -92,5 +96,36 @@ describe('testing your Colyseus app', () => {
 
     expect(client1.state.currentBingoBall).toBe('-2')
     expect(client2.state.currentBingoBall).toBe('-2')
+  })
+
+  test('Run game', async () => {
+    const room = await colyseus.createRoom<BingoRoomState>('bingo_room', {
+      startGameTimeout: 0.01,
+      ballCallInterval: 0.001,
+      bagOfBalls: new ShortBag(),
+    } as CreateOptions)
+
+    const client1 = await colyseus.connectTo(room)
+    const client1Recv = new Promise<string>((res) => client1.onMessage('gameMessage', res))
+    const client2 = await colyseus.connectTo(room)
+
+    await room.waitForNextPatch()
+    client1.send('ready', true)
+    await room.waitForNextPatch()
+    expect(client2.state.currentBingoBall).toBe('-2')
+    await room.waitForNextPatch()
+    expect(client2.state.currentBingoBall).toBe('G47')
+    await room.waitForNextPatch()
+    console.log(`X: ${client1.state.gameOver}`)
+    expect(client2.state.currentBingoBall).toBe('B1')
+    console.log(`X: ${client1.state.gameOver}`)
+    await room.waitForNextPatch()
+    console.log(`X: ${client1.state.gameOver}`)
+    expect(client2.state.currentBingoBall).toBe(' -2')
+    console.log(`X: ${client1.state.gameOver}`)
+    // await room.waitForNextPatch()
+    // expect(client1.state.gameOver).toBeTruthy()
+    // await room.waitForNextPatch()
+    // await expect(client1Recv).resolves.toBe('Game Over!')
   })
 })
