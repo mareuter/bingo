@@ -19,6 +19,20 @@ vi.spyOn(helpers, 'shuffle').mockImplementation((r) => {
   }
 })
 
+const JSON_CARD = {
+  values: [
+    [7, 3, 10, 1, 11],
+    [28, 18, 24, 25, 21],
+    [41, 35, -1, 42, 31],
+    [55, 54, 48, 52, 53],
+    [65, 67, 66, 72, 64],
+  ],
+}
+
+const JSON_CARD2 = JSON.parse(JSON.stringify(JSON_CARD))
+JSON_CARD2.values[3][1] = 60
+JSON_CARD2.values[0][3] = 2
+
 test('Board values after creation', () => {
   const bc = new BingoCard()
   expect(bc.boardValues[0]).toEqual([
@@ -56,6 +70,14 @@ test('Board values after creation', () => {
     new BingoBall(72),
     new BingoBall(64),
   ])
+  const values = bc.toString()
+  expect(JSON.parse(values)).toStrictEqual(JSON_CARD)
+})
+
+test('BingoCard from string', () => {
+  const bc = new BingoCard(JSON.stringify(JSON_CARD2))
+  const values = bc.toString()
+  expect(JSON.parse(values)).toStrictEqual(JSON_CARD2)
 })
 
 test('Sign a Bingo card', () => {

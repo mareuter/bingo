@@ -134,7 +134,7 @@ export class BingoRoom extends Room {
   private announceBall() {
     const bb = this.gameLeader!.announceBall()
     console.log(`E: ${bb.toString()}`)
-    this.state.currentBingoBall = bb.toString()
+    this.state.currentBingoBall = String(bb.number)
     this.checkCpuCards()
     if (this.gameLeader!.isGameOver()) {
       this.ballCallDelay.clear()
@@ -199,7 +199,7 @@ export class BingoRoom extends Room {
       console.log('R')
       const bcs = new BingoCardSchema()
       bcs.signature = c.getSignature()!
-      bcs.values = String(c.boardValues)
+      bcs.values = c.toString()
       p.cards.push(bcs)
     }
   }
