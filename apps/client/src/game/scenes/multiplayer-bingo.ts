@@ -1,4 +1,5 @@
 import { GameObjects, Scene, Sound } from 'phaser'
+import { Room } from '@colyseus/sdk'
 
 import MessagePanel from '../game-objects/message-panel'
 import StatusPanel from '../game-objects/status-panel'
@@ -18,6 +19,7 @@ class MultiplayerBingo extends Scene {
   cardHolder: CardHolder
   gameType: GameObjects.Text
   announceTone: Sound.NoAudioSound | Sound.HTML5AudioSound | Sound.WebAudioSound
+  room: Room
 
   constructor() {
     super(GAME_KEYS.MULTIPLAYERBINGO)
@@ -48,6 +50,8 @@ class MultiplayerBingo extends Scene {
 
     this.events.on('startNewGame', this.startNewGame, this)
     this.events.on('haveWinningCard', this.haveWinningCard, this)
+
+    this.room = await client.joinOrCreate('bingo_room')
   }
 
   async startNewGame() {}
