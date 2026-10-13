@@ -7,6 +7,7 @@ import CpuBingo from './scenes/cpu-bingo'
 import MainMenu from './scenes/main-menu'
 import Splash from './scenes/splash'
 import GameMenu from './scenes/game-menu'
+import MultiplayerBingo from './scenes/multiplayer-bingo'
 
 const config: Types.Core.GameConfig = {
   type: AUTO,
@@ -18,7 +19,7 @@ const config: Types.Core.GameConfig = {
   dom: {
     createContainer: true,
   },
-  scene: [BootLoader, Splash, MainMenu, GameMenu, SoloBingo, CpuBingo],
+  scene: [BootLoader, Splash, MainMenu, GameMenu, SoloBingo, CpuBingo, MultiplayerBingo],
   // scene: [BootLoader, SoloBingo],
   // scene: [BootLoader, GameMenu],
 }

@@ -40,6 +40,7 @@ class MainMenu extends Scene {
 
     this._setActions(this.soloItem, 'SoloBingo')
     this._setActions(this.vsCpuItem, 'CpuBingo')
+    this._setActions(this.multiplayerItem, 'MultiplayerBingo')
   }
 
   startGame(key: string): void {

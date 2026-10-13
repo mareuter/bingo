@@ -13,6 +13,7 @@ export const GAME_KEYS = {
   MAINMENU: 'MainMenu',
   SOLOBINGO: 'SoloBingo',
   CPUBINGO: 'CpuBingo',
+  MULTIPLAYERBINGO: 'MultiplayerBingo',
   GAMEMENU: 'GameMenu',
 }
 
