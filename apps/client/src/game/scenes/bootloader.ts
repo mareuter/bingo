@@ -65,6 +65,8 @@ class BootLoader extends Scene {
     this.load.image('multiplayer-menuitem', 'assets/images/multiplayer-menuitem.png')
     this.load.image('status-board', 'assets/images/status-board.png')
     this.load.image('bingo-ball', 'assets/images/bingo-ball.png')
+    this.load.image('join-button', 'assets/images/join.png')
+    this.load.image('leave-button', 'assets/images/leave.png')
     this.load.image('game-options-button', 'assets/images/game-options.png')
     this.load.image('start-game-button', 'assets/images/start-game.png')
     this.load.image('tone', 'assets/images/tone.png')

@@ -4,7 +4,7 @@ import { Room } from '@colyseus/sdk'
 import MessagePanel from '../game-objects/message-panel'
 import StatusPanel from '../game-objects/status-panel'
 import CardHolder from '../game-objects/card-holder'
-import Toolbar from '../game-objects/toolbar'
+import MultiplayerToolbar from '../game-objects/multiplayer-toolbar'
 import SceneInfo from '../scene-info'
 import { GAMETYPES } from '@repo/core/src/game-types'
 import { GAME_KEYS, REGISTRY_KEYS } from '../common'
@@ -14,7 +14,7 @@ import { client } from '../colyseus'
 class MultiplayerBingo extends Scene {
   #sceneInfo: SceneInfo
   statusPanel: StatusPanel
-  toolbar: Toolbar
+  toolbar: MultiplayerToolbar
   messagePanel: MessagePanel
   cardHolder: CardHolder
   gameType: GameObjects.Text
@@ -36,7 +36,7 @@ class MultiplayerBingo extends Scene {
     this.add.image(this.#sceneInfo.centerWidth, this.#sceneInfo.centerHeight, 'background')
     this.announceTone = this.sound.add('tone')
 
-    this.toolbar = new Toolbar(this, this.#sceneInfo.centerWidth, 35)
+    this.toolbar = new MultiplayerToolbar(this, this.#sceneInfo.centerWidth, 35)
     this.statusPanel = new StatusPanel(this, this.#sceneInfo.centerWidth, 190)
     this.messagePanel = new MessagePanel(this, this.#sceneInfo.centerWidth, 335)
     this.gameType = this.add
@@ -50,8 +50,16 @@ class MultiplayerBingo extends Scene {
 
     this.events.on('startNewGame', this.startNewGame, this)
     this.events.on('haveWinningCard', this.haveWinningCard, this)
+    this.events.on('joinRoom', this.joinRoom, this)
+    this.events.on('leaveRoom', this.leaveRoom, this)
+  }
 
+  async joinRoom() {
     this.room = await client.joinOrCreate('bingo_room')
+  }
+
+  async leaveRoom() {
+    await this.room.leave(true)
   }
 
   async startNewGame() {}
