@@ -18,12 +18,12 @@
     "@repo/vitest-config": "workspace:*",
     "@tauri-apps/cli": "^2.10.0",
     "@types/node": "^22.19.3",
-    "eslint": "^9.39.2",
-    "typescript": "latest",
+    "eslint": "^10.6.0",
+    "typescript": "^6.0.2",
     "vite": "^7.3.1"
   },
   "dependencies": {
-    "@colyseus/sdk": "^0.18.1",
+    "@colyseus/sdk": "^0.18.9",
     "@repo/core": "workspace:*",
     "phaser": "^4.1.0"
   },
