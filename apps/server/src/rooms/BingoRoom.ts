@@ -149,11 +149,18 @@ export class BingoRoom extends Room<{ state: BingoRoomState }> {
   private checkCpuCards() {
     for (const player of this.state.players.values()) {
       if (player.isCpu) {
+        let hasWinningCard = false
+        console.log(`C: ${player.sessionId}`)
         const cards = this.bingoCards.get(player.sessionId)!
         for (const card of cards) {
           if (this.gameLeader!.verify(card, this.state.gameType)) {
             this.handleWinningCard(player, card.getSignature()!)
+            hasWinningCard = true
+            break
           }
+        }
+        if (hasWinningCard) {
+          break
         }
       }
     }
@@ -191,7 +198,7 @@ export class BingoRoom extends Room<{ state: BingoRoomState }> {
   private setPlayerCards(p: Player, n: number) {
     this.bingoCards.set(p.sessionId, [])
     p.cards.clear()
-    console.log(`Q: ${n}`)
+    console.log(`Q: ${p.sessionId}, ${n}`)
     for (let i = 0; i < n; i++) {
       const c = new BingoCard()
       this.gameLeader!.signCard(c)
@@ -205,6 +212,7 @@ export class BingoRoom extends Room<{ state: BingoRoomState }> {
   }
 
   private handleWinningCard(player: Player, id: string): boolean {
+    this.ballCallDelay.pause()
     const card = this.bingoCards.get(player.sessionId)!.find((u) => u.getSignature() === id)
     let needsDisconnection = false
     if (card === undefined) {
@@ -216,13 +224,14 @@ export class BingoRoom extends Room<{ state: BingoRoomState }> {
         this.state.gameOver = true
         let score = this.state.scores.get(String(player.seat))
         if (score !== undefined) {
-          this.state.scores.set(String(player.seat), score++)
+          this.state.scores.set(String(player.seat), ++score)
           this.resetGame()
         }
       } else {
         needsDisconnection = this.handleWolfCry(player)
       }
     }
+    this.ballCallDelay.resume()
     return needsDisconnection
   }
 
@@ -242,6 +251,7 @@ export class BingoRoom extends Room<{ state: BingoRoomState }> {
 
   private resetGame() {
     console.log('II')
+    this.ballCallDelay.clear()
     this.gameLeader!.reset(true)
     this.state.gameHasStarted = false
     this.state.gameOver = false
