@@ -94,7 +94,7 @@ class MultiplayerBingo extends Scene {
 
     callbacks.listen('currentBingoBall', (_, currentBall) => {
       console.log(`D: ${currentBall}`)
-      if (currentBall !== undefined) {
+      if (currentBall !== undefined || currentBall === -2) {
         this.statusPanel.updateStatus(new BingoBall(currentBall))
       }
     })
