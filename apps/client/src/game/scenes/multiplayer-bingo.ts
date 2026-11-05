@@ -66,8 +66,8 @@ class MultiplayerBingo extends Scene {
   async joinRoom() {
     console.log('VV')
     try {
-      const hello = await client.http.get('/api/hello')
-      console.log('/api/hello →', hello.data?.message)
+      // const hello = await client.http.get('/api/hello')
+      // console.log('/api/hello →', hello.data?.message)
 
       this.room = await client.joinOrCreate('bingo_room', {})
       console.log('VV1')
@@ -83,14 +83,31 @@ class MultiplayerBingo extends Scene {
     console.log('VV2')
     const callbacks = Callbacks.get(this.room)
     console.log('VV3')
+    callbacks.onAdd('players', (player, sessionId) => {
+      console.log('Player joined:', sessionId)
+
+      // Listen for changes on nested properties
+      // callbacks.listen(player, "cards", (currentX, previousX) => {
+      //   console.log("Player", sessionId, "x:", currentX);
+      // });
+    })
+
     callbacks.listen('currentBingoBall', (_, currentBall) => {
-      this.statusPanel.updateStatus(new BingoBall(currentBall))
+      console.log(`D: ${currentBall}`)
+      if (currentBall !== undefined) {
+        this.statusPanel.updateStatus(new BingoBall(currentBall))
+      }
     })
     console.log('VV4')
     callbacks.listen('gameOver', (previousState, currentState) => {
+      console.log(`R: ${previousState}, ${currentState}`)
       if (!previousState && currentState) {
         this.endGameAndReset()
       }
+    })
+
+    callbacks.listen('scores', (previousScores, currentScores) => {
+      console.log(`S: ${previousScores}, ${currentScores}`)
     })
     console.log(`H: ${this.room.name}`)
   }
@@ -104,7 +121,7 @@ class MultiplayerBingo extends Scene {
   }
 
   async haveWinningCard(_player: Player, card: BingoCard) {
-    this.room.send('haveWinningCard', { id: card.getSignature() })
+    this.room.send('haveWinningCard', card.getSignature())
   }
 }
 
