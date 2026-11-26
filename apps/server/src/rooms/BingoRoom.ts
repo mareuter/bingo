@@ -1,13 +1,17 @@
 import { Room, Client, Delayed } from 'colyseus'
 import { StateView } from '@colyseus/schema'
 import { BingoRoomState } from './schema/BingoRoomState'
-import Player from './schema/Player'
+import PlayerSchema from './schema/PlayerSchema'
 import type { CreateOptions, GameOptions } from './RoomOptions'
 import GameLeader from '@repo/core/src/game-leader'
 import RandomBag from '@repo/core/src/random-bag'
 import BingoCard from '@repo/core/src/bingo-card'
 import { MAX_WOLF_CRIES } from '@repo/core/src/constants'
 import BingoCardSchema from './schema/BingoCardSchema'
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
 
 export class BingoRoom extends Room<{ state: BingoRoomState }> {
   maxClients = 4
@@ -40,15 +44,28 @@ export class BingoRoom extends Room<{ state: BingoRoomState }> {
       if (player === null) {
         return
       }
-      const needsDisconnection = this.handleWinningCard(player, message)
-      if (needsDisconnection) {
+      this.handleWinningCard(player, message)
+      if (player.needsDisconnection) {
         client.send('gameMessage', 'You have been kicked out for crying Wolf too many times!')
         client.leave(4011, 'WOLFCRIER')
       }
     },
   }
 
-  onCreate({ startGameTimeout = 120, ballCallInterval = 3, bagOfBalls = undefined }: CreateOptions) {
+  private createCpuPlayer(seat: number) {
+    const p = new PlayerSchema()
+    p.seat = seat
+    p.sessionId = `Cpu${seat}`
+    p.isCpu = true
+    const seatStr = seat.toString()
+    this.state.players.set(seatStr, p)
+    this.state.scores.set(seatStr, 0)
+    this.bingoCards.set(p.sessionId, [])
+    const numCards = Math.floor(Math.random() * 3) + 1
+    this.setPlayerCards(p, numCards)
+  }
+
+  onCreate({ startGameTimeout = 5, ballCallInterval = 3, bagOfBalls = undefined }: CreateOptions) {
     /**
      * Called when a new room is created.
      */
@@ -61,15 +78,7 @@ export class BingoRoom extends Room<{ state: BingoRoomState }> {
     this.startGameTimeout = startGameTimeout
     this.ballCallInterval = ballCallInterval
     for (let i = 0; i < this.maxClients; i++) {
-      const p = new Player()
-      p.seat = i
-      p.sessionId = `Cpu${i}`
-      p.isCpu = true
-      this.state.players.set(String(i), p)
-      this.state.scores.set(String(i), 0)
-      this.bingoCards.set(p.sessionId, [])
-      const numCards = Math.floor(Math.random() * 3) + 1
-      this.setPlayerCards(p, numCards)
+      this.createCpuPlayer(i)
     }
     this.clock.start()
     console.log('PA')
@@ -115,9 +124,15 @@ export class BingoRoom extends Room<{ state: BingoRoomState }> {
       state = 'kicked out!'
     }
     console.log(client.sessionId, state, code)
-    this.state.players.delete(client.sessionId)
-    this.bingoCards.delete(client.sessionId)
-    this.state.numPlayers--
+    const p = this.findPlayerBySession(client.sessionId)
+    if (p !== null) {
+      const seat = p.seat.toString()
+      this.state.players.delete(seat)
+      this.state.scores.set(seat, 0)
+      this.bingoCards.delete(client.sessionId)
+      // this.state.numPlayers--
+      this.createCpuPlayer(p.seat)
+    }
   }
 
   onDispose() {
@@ -131,16 +146,17 @@ export class BingoRoom extends Room<{ state: BingoRoomState }> {
     console.error('An error ocurred in', methodName, ':', err)
   }
 
-  private announceBall() {
+  private async announceBall() {
     const bb = this.gameLeader!.announceBall()
     console.log(`E: ${bb.toString()}`)
-    this.state.currentBingoBall = String(bb.number)
+    this.state.currentBingoBall = bb.number
     this.checkCpuCards()
     if (this.gameLeader!.isGameOver()) {
       this.ballCallDelay.clear()
       this.state.gameOver = true
       console.log(`HHH: ${this.state.gameOver}`)
       this.broadcast('gameMessage', 'Game Over!')
+      await sleep(2000)
       this.broadcast('gameMessage', 'Nobody Won!')
       this.resetGame()
     }
@@ -166,23 +182,23 @@ export class BingoRoom extends Room<{ state: BingoRoomState }> {
     }
   }
 
-  private findCpuSeat(): Player | null {
-    let found: Player | null = null
-    this.state.players.forEach((player: Player) => {
+  private findCpuSeat(): PlayerSchema | null {
+    let found: PlayerSchema | null = null
+    this.state.players.forEach((player: PlayerSchema) => {
       if (player.isCpu && found === null) found = player
     })
     return found
   }
 
-  private findPlayerBySession(sessionId: string): Player | null {
-    let found: Player | null = null
-    this.state.players.forEach((p: Player) => {
+  private findPlayerBySession(sessionId: string): PlayerSchema | null {
+    let found: PlayerSchema | null = null
+    this.state.players.forEach((p: PlayerSchema) => {
       if (p.sessionId === sessionId) found = p
     })
     return found
   }
 
-  private getPlayerBySeat(seatIndex: number): Player {
+  private getPlayerBySeat(seatIndex: number): PlayerSchema {
     return this.state.players.get(String(seatIndex))!
   }
 
@@ -195,7 +211,7 @@ export class BingoRoom extends Room<{ state: BingoRoomState }> {
     c.view?.add(player)
   }
 
-  private setPlayerCards(p: Player, n: number) {
+  private setPlayerCards(p: PlayerSchema, n: number) {
     this.bingoCards.set(p.sessionId, [])
     p.cards.clear()
     console.log(`Q: ${p.sessionId}, ${n}`)
@@ -211,41 +227,42 @@ export class BingoRoom extends Room<{ state: BingoRoomState }> {
     }
   }
 
-  private handleWinningCard(player: Player, id: string): boolean {
+  private async handleWinningCard(player: PlayerSchema, id: string) {
     this.ballCallDelay.pause()
     const card = this.bingoCards.get(player.sessionId)!.find((u) => u.getSignature() === id)
-    let needsDisconnection = false
     if (card === undefined) {
-      needsDisconnection = this.handleWolfCry(player)
+      this.handleWolfCry(player)
     } else {
       if (this.gameLeader!.verify(card, this.state.gameType)) {
         this.broadcast('gameMessage', `${player.name()} won!!!`)
+        await sleep(1500)
         this.broadcast('gameMessage', 'Game Over!')
         this.state.gameOver = true
-        let score = this.state.scores.get(String(player.seat))
+        await sleep(1500)
+        const seat = player.seat.toString()
+        let score = this.state.scores.get(seat)
         if (score !== undefined) {
-          this.state.scores.set(String(player.seat), ++score)
+          this.state.scores.set(seat, ++score)
+          console.log(`W: ${this.state.scores}`)
           this.resetGame()
         }
       } else {
-        needsDisconnection = this.handleWolfCry(player)
+        this.handleWolfCry(player)
       }
     }
     this.ballCallDelay.resume()
-    return needsDisconnection
   }
 
-  private handleWolfCry(p: Player): boolean {
+  private handleWolfCry(p: PlayerSchema) {
     const pStr = p.name()
     this.broadcast('gameMessage', `${pStr} cried Wolf!!`)
     p.wolfCries++
     const diff = MAX_WOLF_CRIES - p.wolfCries
     if (diff > 0) {
       this.broadcast('gameMessage', `${pStr} has ${diff} Wolf cries left and then will be kicked out.`)
-      return false
     } else {
       this.broadcast('gameMessage', `${pStr} will be kicked out.`)
-      return true
+      p.needsDisconnection = true
     }
   }
 

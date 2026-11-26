@@ -1,7 +1,7 @@
 import { ArraySchema, Schema, type } from '@colyseus/schema'
 import BingoCardSchema from './BingoCardSchema'
 
-class Player extends Schema {
+class PlayerSchema extends Schema {
   // Seat number fo player
   @type('number') seat = -1
 
@@ -17,6 +17,8 @@ class Player extends Schema {
   // Is player a computer
   @type('boolean') isCpu = false
 
+  needsDisconnection: boolean = false
+
   name(): string {
     if (this.isCpu) {
       return `Cpu ${this.seat + 1}`
@@ -26,4 +28,4 @@ class Player extends Schema {
   }
 }
 
-export default Player
+export default PlayerSchema

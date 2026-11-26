@@ -14,6 +14,9 @@ import { GAME_KEYS, REGISTRY_KEYS } from '../common'
 import { GAME_TYPE_FONT, SCORE_PANEL_FONT } from '../font-configs'
 
 import BingoBall from '@repo/core/src/bingo-ball'
+import BingoCardSchema from '@repo/server/src/rooms/schema/BingoCardSchema'
+import PlayerSchema from '@repo/server/src/rooms/schema/PlayerSchema'
+import { BingoRoomState } from '@repo/server/src/rooms/schema/BingoRoomState'
 
 class MultiplayerBingo extends Scene {
   #sceneInfo: SceneInfo
@@ -22,6 +25,7 @@ class MultiplayerBingo extends Scene {
   messagePanel: MessagePanel
   cardHolder: CardHolder
   gameType: GameObjects.Text
+  cards: BingoCardSchema[] = []
   announceTone: Sound.NoAudioSound | Sound.HTML5AudioSound | Sound.WebAudioSound
   room: Room
 
@@ -61,15 +65,13 @@ class MultiplayerBingo extends Scene {
   endGameAndReset() {
     this.statusPanel.gameOver()
     this.statusPanel.resetDisplay()
+    this.events.emit('endGame')
   }
 
   async joinRoom() {
     console.log('VV')
     try {
-      // const hello = await client.http.get('/api/hello')
-      // console.log('/api/hello →', hello.data?.message)
-
-      this.room = await client.joinOrCreate('bingo_room', {})
+      this.room = await client.joinOrCreate('bingo_room', {}, BingoRoomState)
       console.log('VV1')
     } catch (e) {
       console.log(`Cannot connect: ${e}`)
@@ -78,35 +80,45 @@ class MultiplayerBingo extends Scene {
       return
     }
     this.room.onMessage('gameMessage', (message) => {
+      console.log('L: ', message)
       this.messagePanel.setAndClear(message, 1000)
     })
     console.log('VV2')
     const callbacks = Callbacks.get(this.room)
     console.log('VV3')
     callbacks.onAdd('players', (player, sessionId) => {
-      console.log('Player joined:', sessionId)
+      console.log('Player joined:', (player as PlayerSchema).sessionId, sessionId)
 
       // Listen for changes on nested properties
-      // callbacks.listen(player, "cards", (currentX, previousX) => {
-      //   console.log("Player", sessionId, "x:", currentX);
-      // });
+      callbacks.listen(player, 'cards' as never, (currentCards, _) => {
+        if (currentCards !== undefined) {
+          console.log('In cards')
+        }
+      })
     })
 
-    callbacks.listen('currentBingoBall', (_, currentBall) => {
-      console.log(`D: ${currentBall}`)
-      if (currentBall !== undefined || currentBall === -2) {
-        this.statusPanel.updateStatus(new BingoBall(currentBall))
+    callbacks.listen('currentBingoBall', (currentBall, _) => {
+      // console.log(`D: ${currentBall}`)
+      if (currentBall !== undefined) {
+        const bb = new BingoBall(currentBall)
+        // console.log("K: ", bb)
+        this.statusPanel.updateStatus(bb)
       }
     })
     console.log('VV4')
-    callbacks.listen('gameOver', (previousState, currentState) => {
+    callbacks.listen('gameOver', (currentState, previousState) => {
       console.log(`R: ${previousState}, ${currentState}`)
       if (!previousState && currentState) {
         this.endGameAndReset()
       }
     })
 
-    callbacks.listen('scores', (previousScores, currentScores) => {
+    console.log('VV5')
+    callbacks.listen('gameHasStarted', (currentState, previousState) => {
+      console.log(`C: ${previousState}, ${currentState}`)
+    })
+
+    callbacks.listen('scores', (currentScores, previousScores) => {
       console.log(`S: ${previousScores}, ${currentScores}`)
     })
     console.log(`H: ${this.room.name}`)
@@ -117,6 +129,7 @@ class MultiplayerBingo extends Scene {
   }
 
   async startNewGame() {
+    this.statusPanel.clear()
     this.room.send('ready')
   }
 
