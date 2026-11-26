@@ -24,3 +24,7 @@ export const REGISTRY_KEYS = {
   PLAYERSCORE: 'playerScore',
   CPUSCORE: 'cpuScore',
 }
+
+export type SceneData = {
+  bingoScene: string
+}

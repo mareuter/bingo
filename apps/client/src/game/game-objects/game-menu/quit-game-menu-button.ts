@@ -1,14 +1,16 @@
-import { Scene } from 'phaser'
 import MenuOptionButton from '../../menu-option-button'
-import { GAME_KEYS } from '../../common'
+import GameMenu from '../../scenes/game-menu'
 
 class QuitGameMenuButton extends MenuOptionButton {
-  constructor(scene: Scene, x: number, y: number) {
+  #bingoScene: string
+
+  constructor(scene: GameMenu, x: number, y: number) {
     super(scene, x, y, 'quit-menu-menuoption')
+    this.#bingoScene = scene.bingoScene
   }
 
   onClick(): void {
-    this.scene.scene.switch(GAME_KEYS.SOLOBINGO)
+    this.scene.scene.switch(this.#bingoScene)
   }
 }
 

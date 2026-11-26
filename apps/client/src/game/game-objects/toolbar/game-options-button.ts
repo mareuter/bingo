@@ -11,7 +11,7 @@ class GameOptionsButton extends ToggleButton {
   }
 
   onClick(): void {
-    this.scene.scene.switch(GAME_KEYS.GAMEMENU)
+    this.scene.scene.switch(GAME_KEYS.GAMEMENU, { bingoScene: this.scene.scene.key })
   }
 }
 

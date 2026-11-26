@@ -1,5 +1,5 @@
 import { GameObjects, Scene } from 'phaser'
-import { GAME_KEYS, REGISTRY_KEYS } from '../common'
+import { GAME_KEYS, REGISTRY_KEYS, SceneData } from '../common'
 import SceneInfo from '../scene-info'
 import QuitGameMenuButton from '../game-objects/game-menu/quit-game-menu-button'
 import OneCardMenuButton from '../game-objects/game-menu/one-card-menu-button'
@@ -29,11 +29,16 @@ class GameMenu extends Scene {
   twoCardsButton: TwoCardsMenuButton
   threeCardsButton: ThreeCardsMenuButton
   quitMenuButton: QuitGameMenuButton
+  bingoScene: string
   #selectorOffset = 20
   #selectorImage = 'asterisk-marker'
 
   constructor() {
     super(GAME_KEYS.GAMEMENU)
+  }
+
+  init(data: SceneData) {
+    this.bingoScene = data.bingoScene
   }
 
   create() {
